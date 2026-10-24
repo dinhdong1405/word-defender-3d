@@ -1,0 +1,31 @@
+export const THEME = {
+  colors: {
+    skyDeep: '#071326',
+    skyMid: '#101E38',
+    skyHigh: '#182C52',
+    fortressDark: '#162A36',
+    fortressPlate: '#263C4F',
+    primaryCyan: '#33E6DD',
+    primaryCyanGlow: 'rgba(51, 230, 221, 0.4)',
+    projectileGold: '#F5D56C',
+    projectileCore: '#FFF2B4',
+    successGreen: '#38E3A5',
+    warningAmber: '#FFB547',
+    dangerRed: '#FC6868',
+    textWhite: '#F6F9FF',
+    textMuted: '#8BA1C2',
+    panelBg: 'rgba(10, 22, 42, 0.78)',
+    panelBorder: 'rgba(51, 230, 221, 0.25)',
+    panelBorderHover: 'rgba(51, 230, 221, 0.6)',
+  },
+  typography: {
+    displayFont: '"Chakra Petch", sans-serif',
+    bodyFont: '"Plus Jakarta Sans", sans-serif',
+    monoFont: '"JetBrains Mono", monospace',
+  },
+  qualityPresets: {
+    low: { dpr: 1.0, shadows: false, particles: 200, antialias: false },
+    medium: { dpr: 1.5, shadows: true, particles: 450, antialias: true },
+    high: { dpr: 2.0, shadows: true, particles: 800, antialias: true },
+  },
+};
