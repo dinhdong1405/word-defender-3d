@@ -1,81 +1,62 @@
-import { GameDifficulty } from '../types/game';
+export const GAME_BALANCE = {
+  maxLives: 3,
+  wavesPerRun: 3,                 // wave 1 & 2 regular mobs; wave 3 boss
+  regularEnemiesPerWave: [6, 8],
+  bossRequiredWords: 5,
+  maxConcurrentEnemies: 5,
+  sessionWords: 15,
+  spawnIntervalMs: 1900,
+  baseEnemySpeedPxPerSec: 22,
+  speedMultiplierByDifficulty: {
+    easy: 0.70,
+    normal: 1.0,
+    hard: 1.35,
+  },
+  stageWidth: 1280,
+  stageHeight: 720,
+  ponpiCenterX: 640,
+  ponpiCenterY: 625,
+  defenseLineY: 638,
+  gridSize: 14,
+  gridColor: 'rgba(214, 165, 126, 0.24)',
+  gridLineWidth: 0.5,
+  invulnerableDurationMs: 700,
+  typedBulletSpeedPxPerSec: 1100,
+  slowBulletSpeedPxPerSec: 850,
+  hitRadiusPx: 20,
+  initialCoinBalance: 99999,        // test mode balance for testing
+  startingSkills: ['skill_slow_shot'],
 
-export interface StageConfig {
-  stage: number;
-  wordCountThreshold: number; // Words destroyed to advance
-  maxActive: number;
-  spawnIntervalSec: [number, number]; // [min, max]
-  fallSpeedMultiplier: number;
-  wordMinLength: number;
-  wordMaxLength: number;
-}
-
-export const DIFFICULTY_MULTIPLIERS: Record<GameDifficulty, { speed: number; spawnDelay: number }> = {
-  easy: { speed: 0.75, spawnDelay: 1.35 },
-  normal: { speed: 1.0, spawnDelay: 1.0 },
-  hard: { speed: 1.35, spawnDelay: 0.75 },
-};
-
-export const STAGE_CONFIGS: StageConfig[] = [
-  {
-    stage: 1,
-    wordCountThreshold: 0,
-    maxActive: 3,
-    spawnIntervalSec: [3.8, 4.5],
-    fallSpeedMultiplier: 1.0,
-    wordMinLength: 3,
-    wordMaxLength: 5,
+  // Skills
+  skills: {
+    skill_slow_shot: {
+      id: 'skill_slow_shot',
+      title: 'Slow Shot',
+      priceCoins: 0,
+      chargesPerRun: 3,
+      cooldownMs: 12000,
+      speedMultiplier: 0.35,
+      durationMs: 5000,
+      bossMultiplierCap: 0.50,
+      bulletSpeedPxPerSec: 850,
+    },
+    skill_freeze_pulse: {
+      id: 'skill_freeze_pulse',
+      title: 'Freeze Pulse',
+      priceCoins: 200,
+      chargesPerRun: 2,
+      cooldownMs: 25000,
+      speedMultiplier: 0.15,
+      durationMs: 3000,
+      bossMultiplierCap: 0.45,
+    },
+    skill_shield_bubble: {
+      id: 'skill_shield_bubble',
+      title: 'Shield Bubble',
+      priceCoins: 150,
+      chargesPerRun: 2,
+      cooldownMs: 30000,
+      durationMs: 12000,
+    },
   },
-  {
-    stage: 2,
-    wordCountThreshold: 8,
-    maxActive: 4,
-    spawnIntervalSec: [3.0, 3.8],
-    fallSpeedMultiplier: 1.15,
-    wordMinLength: 4,
-    wordMaxLength: 6,
-  },
-  {
-    stage: 3,
-    wordCountThreshold: 18,
-    maxActive: 5,
-    spawnIntervalSec: [2.5, 3.2],
-    fallSpeedMultiplier: 1.3,
-    wordMinLength: 5,
-    wordMaxLength: 8,
-  },
-  {
-    stage: 4,
-    wordCountThreshold: 30,
-    maxActive: 6,
-    spawnIntervalSec: [2.0, 2.7],
-    fallSpeedMultiplier: 1.5,
-    wordMinLength: 6,
-    wordMaxLength: 9,
-  },
-  {
-    stage: 5,
-    wordCountThreshold: 45,
-    maxActive: 7,
-    spawnIntervalSec: [1.8, 2.3],
-    fallSpeedMultiplier: 1.8,
-    wordMinLength: 3,
-    wordMaxLength: 12,
-  },
-];
-
-export const GAME_CONSTANTS = {
-  INITIAL_LIVES: 3,
-  SPAWN_Y: 7.2,
-  GROUND_Y: -2.8,
-  URGENT_Y_THRESHOLD: -0.6,
-  SPAWN_X_RANGE: [-5.2, 5.2] as [number, number],
-  SPAWN_Z_VARIATION: [-0.8, 0.8] as [number, number],
-  DAMAGE_GRACE_MS: 600,
-  BASE_SCORE: 10,
-  COMBO_BONUS_STEP_5: 20,
-  COMBO_BONUS_STEP_10: 50,
-  TURRET_POS: [0, -3.2, 2.0] as [number, number, number],
-  PROJECTILE_SPEED: 28.0,
-  BASE_FALL_SPEED: 0.72, // units per second at multiplier 1.0
-};
+} as const;

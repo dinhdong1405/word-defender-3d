@@ -1,118 +1,120 @@
-import { VocabularyPack } from './vocabulary';
+export type PoseId = 'idle' | 'fire_up_left' | 'fire_up' | 'fire_up_right' | 'fire_left' | 'fire_right';
+export type Difficulty = 'easy' | 'normal' | 'hard';
+export type GameMode = 'copy' | 'recall' | 'listen';
 
-export type GamePhase =
-  | 'boot'
-  | 'loading'
-  | 'ready'
-  | 'countdown'
-  | 'playing'
-  | 'paused'
-  | 'resume_countdown'
-  | 'game_over'
-  | 'summary'
-  | 'error';
+export interface StatusEffects {
+  slowUntilGameMs?: number;
+  slowMultiplier?: number;
+  freezeUntilGameMs?: number;
+  freezeMultiplier?: number;
+}
 
-export type GameMode = 'classic' | 'meaning' | 'zen';
-export type GameDifficulty = 'easy' | 'normal' | 'hard';
-export type BlockState = 'spawning' | 'active' | 'destroyed' | 'missed';
-
-export interface FallingBlock {
+export interface EnemyState {
   id: string;
+  speciesId: string;
   entryId: string;
-  displayText: string;
-  typingText: string;
-  typedIndex: number;
-  state: BlockState;
+  word: string;                      // primary expected answer
+  acceptedAnswers: string[];         // all valid aliases
+  promptText: string;                // text shown on WordTag
+  meaningText?: string;               // Vietnamese meaning
   x: number;
   y: number;
-  z: number;
-  speedUnitsPerSecond: number;
-  spawnedAtMs: number;
-  protectedUntilMs?: number;
-  meaningVi?: string;
-  ipa?: string;
-  category?: string;
-}
-
-export interface SessionStats {
-  score: number;
-  lives: number;
-  level: number;
-  killed: number;
-  missed: number;
-  correctKeys: number;
-  incorrectKeys: number;
-  maxCombo: number;
-  currentCombo: number;
-  elapsedPlayingMs: number;
-  missedWordEntries: Array<{
-    term: string;
-    meaningVi?: string;
-    ipa?: string;
-    missedAtMs: number;
+  baseVelocityY: number;
+  statusEffects: StatusEffects;
+  selected: boolean;
+  spawnedAtGameMs: number;
+  width: number;
+  height: number;
+  isBoss?: boolean;
+  bossSegmentsRemaining?: number;
+  bossMaxSegments?: number;
+  bossWordQueue?: Array<{
+    entryId: string;
+    word: string;
+    acceptedAnswers: string[];
+    promptText: string;
+    meaningText?: string;
   }>;
+  pendingDefeat?: boolean;
 }
 
-export interface GameSnapshot {
-  phase: GamePhase;
-  seed: number;
-  mode: GameMode;
-  difficulty: GameDifficulty;
-  packId: string;
-  packTitle: string;
-  blocks: FallingBlock[];
-  lockedBlockId: string | null;
-  stats: SessionStats;
-  gameTimeMs: number;
-  countdownValue?: number;
-}
-
-export type GameEvent =
-  | { type: 'KEY_CORRECT'; blockId: string; charIndex: number; char: string; blockPos: [number, number, number] }
-  | { type: 'KEY_WRONG'; expectedChar?: string; typedChar: string; blockId?: string }
-  | { type: 'TARGET_LOCKED'; blockId: string }
-  | { type: 'TARGET_RELEASED'; blockId: string }
-  | { type: 'SHOT_FIRED'; blockId: string; charIndex: number; targetPos: [number, number, number] }
-  | { type: 'BLOCK_DESTROYED'; blockId: string; entryId: string; term: string; meaningVi?: string; points: number; pos: [number, number, number] }
-  | { type: 'BLOCK_MISSED'; blockId: string; entryId: string; term: string; pos: [number, number, number] }
-  | { type: 'LIFE_LOST'; remainingLives: number }
-  | { type: 'LEVEL_UP'; level: number }
-  | { type: 'COMBO_MILESTONE'; combo: number }
-  | { type: 'GAME_OVER' };
-
-export interface SessionConfig {
-  pack: VocabularyPack;
-  mode: GameMode;
-  difficulty: GameDifficulty;
-  seed?: number;
-}
-
-export interface PlayerGameSettings {
-  soundFxVolume: number;
-  musicVolume: number;
-  pronunciationEnabled: boolean;
-  graphicsQuality: 'auto' | 'low' | 'medium' | 'high';
-  reducedMotion: boolean;
-  showMeaningOnKill: boolean;
-  skipTutorial: boolean;
-  preferredDifficulty: GameDifficulty;
-}
-
-export interface GameSessionRecord {
+export interface DefeatedWordEffect {
   id: string;
-  packId: string;
-  packTitleSnapshot: string;
+  x: number;
+  y: number;
+  word: string;
+  meaning: string;
+  createdAtGameMs: number;
+  expiresAtGameMs: number;
+}
+
+export type BulletKind =
+  | 'normal'
+  | 'bullet_default'
+  | 'slow_shot'
+  | 'freeze_pulse'
+  | 'bullet_missile'
+  | 'bullet_shuriken'
+  | 'bullet_kunai'
+  | 'bullet_soccer'
+  | 'bullet_basketball'
+  | 'bullet_laser'
+  | 'bullet_fireball'
+  | 'bullet_crystal';
+
+export interface BulletState {
+  id: string;
+  x: number;
+  y: number;
+  targetEnemyId: string;
+  kind: BulletKind;
+  speed: number;
+  spawnedAtGameMs: number;
+  createdAt: number;
+  angle?: number;
+  isFinishingBullet?: boolean;
+  matchedWord?: string;
+}
+
+export interface Particle {
+  id: string;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  color: string;
+  size: number;
+  alpha: number;
+  decay: number;
+  shape?: 'circle' | 'square' | 'spark';
+}
+
+export interface SkillRuntime {
+  itemId: string;
+  title: string;
+  remainingCharges: number;
+  maxCharges: number;
+  cooldownMs: number;
+  readyAtGameMs: number;
+}
+
+export interface RunSummary {
+  id: string;
+  setId: string;
   mode: GameMode;
-  difficulty: GameDifficulty;
-  score: number;
-  maxCombo: number;
-  accuracy: number;
-  correctKeys: number;
-  incorrectKeys: number;
-  wordsDestroyed: number;
-  wordsMissed: number;
-  reachedLevel: number;
-  durationMs: number;
+  difficulty: Difficulty;
+  result: 'win' | 'lose' | 'quit';
+  completedWords: number;
+  independentRecallCorrect: number;
+  wavesCleared: number;
+  totalScore: number;
+  attemptedEntryIds: string[];
+  startedAt: string;
   endedAt: string;
-  missedWords: Array<{ term: string; meaningVi?: string; ipa?: string }>;
+  rewardedAt?: string;
+  coinsEarned: number;
+  xpEarned: number;
+  accuracy: number;
+  wrongKeystrokes: number;
+  hintsUsed: number;
 }

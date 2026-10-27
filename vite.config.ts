@@ -1,11 +1,26 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import path from 'path';
 
+// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 3000,
-    open: false,
-    host: true,
+    fs: {
+      strict: false,
+    },
   },
-});
+  resolve: {
+    // Keep the project-facing paths for OneDrive-backed junctions. Otherwise
+    // Vite treats src as external and serves raw TSX in dev mode.
+    preserveSymlinks: true,
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./src/tests/setup.ts'],
+  },
+} as any);

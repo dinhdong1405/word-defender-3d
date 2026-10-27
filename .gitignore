@@ -1,4 +1,4 @@
-# Dependencies
+﻿# Dependencies
 node_modules
 .pnp
 .pnp.js
@@ -9,6 +9,10 @@ dist-ssr
 
 # Vite cache
 .vite
+
+# Scratch & test assets
+scratch/
+scratch_*.png
 
 # Environment variables
 .env

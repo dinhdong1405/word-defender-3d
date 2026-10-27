@@ -1,0 +1,38 @@
+/* Subtle notebook grid shared by menus and supporting previews. */
+.notebook-grid-bg {
+  background-color: var(--color-paper);
+  background-image: 
+    linear-gradient(to right, var(--color-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-grid-line) 1px, transparent 1px);
+  background-size: 14px 14px;
+  background-position: 0 0;
+}
+
+/* Specific battle canvas wrapper guaranteeing no extra background decorations */
+.battle-viewport-container {
+  background-color: var(--color-paper);
+  background-image: 
+    linear-gradient(to right, var(--color-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-grid-line) 1px, transparent 1px);
+  background-size: 14px 14px;
+  background-position: 0 0;
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+/* Responsive layout adjustments for mobile */
+@media (max-width: 768px) {
+  .mobile-stack-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .mobile-p-sm {
+    padding: 16px 12px !important;
+  }
+
+  .mobile-hide-hotkey {
+    display: none !important;
+  }
+}

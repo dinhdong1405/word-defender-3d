@@ -1,0 +1,323 @@
+import React, { useEffect, useState } from 'react';
+import { useApp } from '../app/appStore';
+import { VocabularyEntry, VocabularySet } from '../types/vocabulary';
+import { db } from '../data/db';
+import { PaperPanel } from '../components/PaperPanel';
+import { StickerButton } from '../components/StickerButton';
+import { ArrowLeft, Plus, Upload, Trash2, Eye, Download, Check } from 'lucide-react';
+import { generateCsvTemplate } from '../data/importExcel';
+
+export const LibraryPage: React.FC = () => {
+  const { navigateTo, selectedSetId, setSelectedSetId } = useApp();
+  const [sets, setSets] = useState<VocabularySet[]>([]);
+  const [search, setSearch] = useState('');
+  const [previewSet, setPreviewSet] = useState<VocabularySet | null>(null);
+  const [previewWords, setPreviewWords] = useState<VocabularyEntry[]>([]);
+
+  const loadSets = async () => {
+    const allSets = await db.wordSets.toArray();
+    setSets(allSets);
+  };
+
+  useEffect(() => {
+    loadSets();
+  }, []);
+
+  const handleSelect = (setId: string) => {
+    setSelectedSetId(setId);
+    navigateTo('prepare');
+  };
+
+  const handlePreview = async (set: VocabularySet) => {
+    const words = await db.words.where('setId').equals(set.id).toArray();
+    setPreviewSet(set);
+    setPreviewWords(words);
+  };
+
+  const handleDelete = async (setId: string, title: string) => {
+    if (window.confirm(`Bạn có chắc chắn muốn xóa bộ từ "${title}"?`)) {
+      await db.transaction('rw', [db.wordSets, db.words], async () => {
+        await db.wordSets.delete(setId);
+        await db.words.where('setId').equals(setId).delete();
+      });
+      if (selectedSetId === setId) {
+        setSelectedSetId('set_everyday');
+      }
+      loadSets();
+    }
+  };
+
+  const handleDownloadTemplate = () => {
+    const csvContent = generateCsvTemplate();
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'ponpi_word_template.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const filteredSets = sets.filter((s) =>
+    s.title.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div
+      className="notebook-grid-bg"
+      style={{
+        minHeight: '100vh',
+        padding: '30px 20px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+    >
+      <div style={{ width: '100%', maxWidth: '900px' }}>
+        {/* Navigation Bar */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
+          <StickerButton onClick={() => navigateTo('home')} icon={<ArrowLeft size={18} />}>
+            Trang Chủ
+          </StickerButton>
+
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            <StickerButton size="sm" onClick={handleDownloadTemplate} icon={<Download size={14} />}>
+              Tải Template
+            </StickerButton>
+            <StickerButton
+              variant="mint"
+              size="sm"
+              onClick={() => navigateTo('editor')}
+              icon={<Upload size={14} />}
+            >
+              Import CSV
+            </StickerButton>
+          </div>
+        </div>
+
+        {/* Page Title & Search */}
+        <div style={{ marginBottom: '24px' }}>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '2.2rem', fontWeight: 900 }}>
+            Thư Viện Bộ Từ Vựng
+          </h1>
+          <p style={{ color: 'var(--color-muted-ink)', marginTop: '4px' }}>
+            Chọn bộ từ có sẵn để luyện tập hoặc tự thêm bộ từ của bạn từ file Excel.
+          </p>
+
+          <input
+            type="text"
+            placeholder="Tìm kiếm bộ từ vựng..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            style={{
+              marginTop: '12px',
+              width: '100%',
+              maxWidth: '400px',
+              padding: '10px 16px',
+              fontFamily: 'var(--font-body)',
+              fontSize: '1rem',
+              border: 'var(--border-ink)',
+              borderRadius: 'var(--radius-md)',
+              boxShadow: 'var(--shadow-sticker-sm)',
+              outline: 'none',
+            }}
+          />
+        </div>
+
+        {/* Word Sets Grid */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+            gap: '16px',
+          }}
+        >
+          {filteredSets.map((set) => {
+            const isSelected = set.id === selectedSetId;
+            return (
+              <PaperPanel
+                key={set.id}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  border: isSelected ? '3px solid var(--color-ponpi-pink)' : 'var(--border-ink)',
+                }}
+              >
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <span
+                      style={{
+                        padding: '3px 8px',
+                        fontSize: '0.75rem',
+                        fontWeight: 800,
+                        fontFamily: 'var(--font-display)',
+                        borderRadius: 'var(--radius-sm)',
+                        backgroundColor: set.owner === 'builtin' ? '#E1F5FE' : '#FFF9C4',
+                        color: set.owner === 'builtin' ? '#0288D1' : '#F57F17',
+                        border: '1px solid var(--color-ink)',
+                      }}
+                    >
+                      {set.owner === 'builtin' ? 'Sẵn Có' : 'Tự Tạo'}
+                    </span>
+
+                    {isSelected && (
+                      <span
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '2px',
+                          color: '#E06C96',
+                          fontSize: '0.8rem',
+                          fontWeight: 800,
+                        }}
+                      >
+                        <Check size={14} /> Đang chọn
+                      </span>
+                    )}
+                  </div>
+
+                  <h3
+                    style={{
+                      fontFamily: 'var(--font-display)',
+                      fontSize: '1.25rem',
+                      fontWeight: 800,
+                      marginTop: '8px',
+                    }}
+                  >
+                    {set.title}
+                  </h3>
+                  <p
+                    style={{
+                      fontSize: '0.9rem',
+                      color: 'var(--color-muted-ink)',
+                      marginTop: '4px',
+                      minHeight: '38px',
+                    }}
+                  >
+                    {set.description || 'Bộ từ vựng tiếng Anh.'}
+                  </p>
+
+                  <div style={{ fontSize: '0.85rem', fontWeight: 600, marginTop: '8px', color: 'var(--color-ink)' }}>
+                    {set.entryIds.length} từ vựng
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    display: 'flex',
+                    gap: '8px',
+                    marginTop: '16px',
+                    alignItems: 'center',
+                  }}
+                >
+                  <StickerButton
+                    variant={isSelected ? 'primary' : 'default'}
+                    size="sm"
+                    onClick={() => handleSelect(set.id)}
+                    style={{ flex: 1 }}
+                  >
+                    {isSelected ? 'Luyện Ngay' : 'Chọn Bộ Này'}
+                  </StickerButton>
+
+                  <StickerButton size="sm" onClick={() => handlePreview(set)} icon={<Eye size={14} />} />
+
+                  {set.owner === 'local' && (
+                    <StickerButton
+                      variant="danger"
+                      size="sm"
+                      onClick={() => handleDelete(set.id, set.title)}
+                      icon={<Trash2 size={14} />}
+                    />
+                  )}
+                </div>
+              </PaperPanel>
+            );
+          })}
+        </div>
+
+        {/* Word Preview Modal */}
+        {previewSet && (
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(37, 35, 43, 0.6)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '20px',
+              zIndex: 100,
+            }}
+          >
+            <PaperPanel
+              style={{
+                width: '100%',
+                maxWidth: '600px',
+                maxHeight: '80vh',
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                <div>
+                  <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800 }}>{previewSet.title}</h2>
+                  <p style={{ color: 'var(--color-muted-ink)', fontSize: '0.9rem' }}>
+                    Danh sách {previewWords.length} từ trong bộ
+                  </p>
+                </div>
+                <StickerButton size="sm" onClick={() => setPreviewSet(null)}>
+                  Đóng
+                </StickerButton>
+              </div>
+
+              <div
+                style={{
+                  overflowY: 'auto',
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px',
+                  paddingRight: '6px',
+                }}
+              >
+                {previewWords.map((word) => (
+                  <div
+                    key={word.id}
+                    style={{
+                      padding: '8px 12px',
+                      backgroundColor: 'var(--color-paper)',
+                      border: '1.5px solid var(--color-ink)',
+                      borderRadius: 'var(--radius-sm)',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <div>
+                      <div style={{ fontWeight: 800, fontFamily: 'var(--font-english)' }}>
+                        {word.english} {word.ipa && <span style={{ fontWeight: 400, opacity: 0.7, fontFamily: 'var(--font-vietnamese)' }}>{word.ipa}</span>}
+                      </div>
+                      {word.exampleEn && (
+                        <div style={{ fontSize: '0.8rem', color: 'var(--color-muted-ink)', marginTop: '2px', fontFamily: 'var(--font-english)' }}>
+                          {word.exampleEn}
+                        </div>
+                      )}
+                    </div>
+                    <div style={{ fontWeight: 700, color: '#E06C96', textAlign: 'right', fontFamily: 'var(--font-vietnamese)' }}>
+                      {word.vietnamese}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </PaperPanel>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
