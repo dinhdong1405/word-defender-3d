@@ -6,6 +6,7 @@ import { RunSummary } from '../types/game';
 import { SEED_ENTRIES, SEED_WORD_SETS } from './seedWordSets';
 import { DEFAULT_INVENTORY_SEED } from '../config/catalog';
 import { GAME_BALANCE } from '../config/balance';
+import type { AccountCredential, AuthSession, SecurityEvent } from '../auth/types';
 
 export interface UserProfile {
   id: string;
@@ -35,6 +36,9 @@ export class PonpiDatabase extends Dexie {
   inventories!: EntityTable<Inventory, 'profileId'>;
   ledger!: EntityTable<LedgerEntry, 'id'>;
   settings!: EntityTable<UserSettings, 'id'>;
+  accounts!: EntityTable<AccountCredential, 'id'>;
+  sessions!: EntityTable<AuthSession, 'id'>;
+  securityEvents!: EntityTable<SecurityEvent, 'id'>;
 
   constructor() {
     super('PonpiWordBlasterDB');
@@ -49,6 +53,33 @@ export class PonpiDatabase extends Dexie {
       inventories: 'profileId',
       ledger: 'id, profileId, referenceId, at',
       settings: 'id',
+    });
+
+    this.version(2).stores({
+      profiles: 'id',
+      wordSets: 'id, owner',
+      words: 'id, setId, english',
+      learningRecords: 'entryId, profileId, wordId, stage, nextDueAt',
+      attempts: 'id, profileId, runId, entryId, occurredAt',
+      runs: 'id, profileId, setId, result, startedAt',
+      wallets: 'profileId',
+      inventories: 'profileId',
+      ledger: 'id, profileId, referenceId, at',
+      settings: 'id',
+      accounts: 'id, &normalizedEmail, role, status, createdAt',
+      sessions: 'id, &tokenHash, accountId, expiresAt, idleExpiresAt',
+      securityEvents: 'id, accountId, type, occurredAt',
+    }).upgrade(async (transaction) => {
+      await transaction.table('learningRecords').toCollection().modify((record) => {
+        record.profileId = record.profileId || 'guest_profile';
+        record.wordId = record.wordId || record.entryId;
+      });
+      await transaction.table('attempts').toCollection().modify((attempt) => {
+        attempt.profileId = attempt.profileId || 'guest_profile';
+      });
+      await transaction.table('runs').toCollection().modify((run) => {
+        run.profileId = run.profileId || 'guest_profile';
+      });
     });
   }
 }
@@ -66,11 +97,13 @@ async function seedMissingData(): Promise<void> {
     db.settings,
     db.wordSets,
     db.words,
+    db.accounts,
   ], async () => {
     const profileId = 'guest_profile';
     const now = new Date().toISOString();
+    const hasRegisteredAccounts = (await db.accounts.count()) > 0;
 
-    if (!(await db.profiles.get(profileId))) {
+    if (!hasRegisteredAccounts && !(await db.profiles.get(profileId))) {
       await db.profiles.add({
         id: profileId,
         name: 'Ponpi Pilot',
@@ -80,25 +113,25 @@ async function seedMissingData(): Promise<void> {
       });
     }
 
-    const existingWallet = await db.wallets.get(profileId);
-    if (!existingWallet) {
+    const existingWallet = hasRegisteredAccounts ? undefined : await db.wallets.get(profileId);
+    if (!hasRegisteredAccounts && !existingWallet) {
       await db.wallets.add({
         profileId,
         balance: GAME_BALANCE.initialCoinBalance,
         totalEarned: GAME_BALANCE.initialCoinBalance,
         totalSpent: 0,
       });
-    } else if (existingWallet.balance < 99999) {
+    } else if (existingWallet && existingWallet.balance < 99999) {
       existingWallet.balance = 99999;
       existingWallet.totalEarned = Math.max(existingWallet.totalEarned, 99999);
       await db.wallets.put(existingWallet);
     }
 
-    const onboardingLedger = await db.ledger
+    const onboardingLedger = hasRegisteredAccounts ? undefined : await db.ledger
       .where('referenceId')
       .equals('onboarding_welcome_bonus')
       .first();
-    if (!onboardingLedger) {
+    if (!hasRegisteredAccounts && !onboardingLedger) {
       await db.ledger.add({
         id: 'ledger_onboarding_welcome_bonus',
         profileId,
@@ -109,14 +142,14 @@ async function seedMissingData(): Promise<void> {
       });
     }
 
-    if (!(await db.inventories.get(profileId))) {
+    if (!hasRegisteredAccounts && !(await db.inventories.get(profileId))) {
       await db.inventories.add({
         profileId,
         ...DEFAULT_INVENTORY_SEED,
       });
     }
 
-    if (!(await db.settings.get('user_settings'))) {
+    if (!hasRegisteredAccounts && !(await db.settings.get('user_settings'))) {
       await db.settings.add({
         id: 'user_settings',
         audioEnabled: true,

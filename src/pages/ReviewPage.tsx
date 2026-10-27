@@ -7,6 +7,7 @@ import { PaperPanel } from '../components/PaperPanel';
 import { StickerButton } from '../components/StickerButton';
 import { ArrowLeft, Play, RotateCcw, Volume2, Check, X, BookOpen } from 'lucide-react';
 import { speakEnglishWord } from '../learning/pronunciation';
+import { getActiveProfileId } from '../auth/authService';
 
 export const ReviewPage: React.FC = () => {
   const { navigateTo } = useApp();
@@ -21,7 +22,8 @@ export const ReviewPage: React.FC = () => {
   useEffect(() => {
     const loadData = async () => {
       const now = new Date().toISOString();
-      const allRecords = await db.learningRecords.toArray();
+      const profileId = getActiveProfileId();
+      const allRecords = await db.learningRecords.where('profileId').equals(profileId).toArray();
       const allWords = await db.words.toArray();
       const wordMap = new Map(allWords.map((w) => [w.id, w]));
 
@@ -29,7 +31,7 @@ export const ReviewPage: React.FC = () => {
       const dueList: { entry: VocabularyEntry; record?: LearningRecord }[] = [];
       for (const rec of allRecords) {
         if (rec.nextDueAt && rec.nextDueAt <= now) {
-          const entry = wordMap.get(rec.entryId);
+          const entry = wordMap.get(rec.wordId ?? rec.entryId);
           if (entry) {
             dueList.push({ entry, record: rec });
           }
@@ -38,7 +40,13 @@ export const ReviewPage: React.FC = () => {
       setDueEntries(dueList);
 
       // 2. Recent mistakes from attempts
-      const attempts = await db.attempts.orderBy('occurredAt').reverse().limit(30).toArray();
+      const attempts = await db.attempts
+        .where('profileId')
+        .equals(profileId)
+        .filter((attempt) => Boolean(attempt.occurredAt))
+        .toArray();
+      attempts.sort((left, right) => right.occurredAt.localeCompare(left.occurredAt));
+      attempts.splice(30);
       const mistakes: { entry: VocabularyEntry; attempt: Attempt }[] = [];
       const seen = new Set<string>();
 

@@ -4,6 +4,8 @@ import { Inventory, Wallet } from '../types/economy';
 import { db, UserProfile, UserSettings } from '../data/db';
 import { DEFAULT_INVENTORY_SEED } from '../config/catalog';
 import { GameMapId, getActiveMapId, setActiveMapId } from '../config/maps';
+import { useAuth } from '../auth/AuthContext';
+import { getSettingsId } from '../auth/authService';
 
 export type AppRoute =
   | 'home'
@@ -16,7 +18,8 @@ export type AppRoute =
   | 'store'
   | 'wardrobe'
   | 'progress'
-  | 'settings';
+  | 'settings'
+  | 'admin';
 
 interface AppContextValue {
   currentRoute: AppRoute;
@@ -43,6 +46,8 @@ interface AppContextValue {
 const AppContext = createContext<AppContextValue | null>(null);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { account, isAdmin } = useAuth();
+  const profileId = account?.id ?? 'guest_profile';
   const [currentRoute, setCurrentRoute] = useState<AppRoute>('home');
   const [selectedSetId, setSelectedSetId] = useState<string>('set_everyday');
   const [selectedMode, setSelectedMode] = useState<GameMode>('copy');
@@ -62,20 +67,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [dueWordsCount, setDueWordsCount] = useState<number>(0);
 
   const refreshUserData = async () => {
-    const prof = await db.profiles.get('guest_profile');
+    const prof = await db.profiles.get(profileId);
     if (prof) setProfile(prof);
 
-    let wal = await db.wallets.get('guest_profile');
-    if (wal) {
-      if (wal.balance < 99999) {
-        wal.balance = 99999;
-        wal.totalEarned = Math.max(wal.totalEarned, 99999);
-        await db.wallets.put(wal);
-      }
-      setWallet(wal);
-    }
+    const wal = await db.wallets.get(profileId);
+    setWallet(wal ?? null);
 
-    const inv = await db.inventories.get('guest_profile');
+    const inv = await db.inventories.get(profileId);
     if (inv) {
       let changed = false;
       for (const id of DEFAULT_INVENTORY_SEED.ownedItemIds) {
@@ -94,23 +92,28 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       setInventory(inv);
     }
 
-    const set = await db.settings.get('user_settings');
+    const set = await db.settings.get(getSettingsId(profileId));
     if (set) setSettings(set);
 
     const now = new Date().toISOString();
-    const dueCount = await db.learningRecords.where('nextDueAt').belowOrEqual(now).count();
+    const dueCount = await db.learningRecords
+      .where('profileId')
+      .equals(profileId)
+      .filter((record) => Boolean(record.nextDueAt && record.nextDueAt <= now))
+      .count();
     setDueWordsCount(dueCount);
   };
 
   const addTestCoins = async (amount = 99999) => {
-    let wal = await db.wallets.get('guest_profile');
+    if (!isAdmin) throw new Error('Chỉ quản trị viên mới có thể cấp xu thử nghiệm.');
+    let wal = await db.wallets.get(profileId);
     if (wal) {
       wal.balance = (wal.balance || 0) + amount;
       wal.totalEarned = (wal.totalEarned || 0) + amount;
       await db.wallets.put(wal);
     } else {
       wal = {
-        profileId: 'guest_profile',
+        profileId,
         balance: amount,
         totalEarned: amount,
         totalSpent: 0,
@@ -122,10 +125,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   useEffect(() => {
     refreshUserData();
-  }, []);
+  }, [profileId]);
 
   const navigateTo = (route: AppRoute) => {
-    setCurrentRoute(route);
+    const requiresAdmin = route === 'admin' || route === 'editor';
+    setCurrentRoute(requiresAdmin && !isAdmin ? 'home' : route);
     refreshUserData();
     window.scrollTo(0, 0);
   };

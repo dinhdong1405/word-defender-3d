@@ -1,5 +1,6 @@
 import { RunSummary } from '../types/game';
 import { db } from '../data/db';
+import { getActiveProfileId } from '../auth/authService';
 
 export function calculateRunCoins(s: RunSummary): number {
   const completed = Math.max(0, s.completedWords);
@@ -18,8 +19,10 @@ export function calculateRunXP(s: RunSummary): number {
 }
 
 export async function awardRunRewards(summary: RunSummary): Promise<{ coinsEarned: number; xpEarned: number }> {
-  const profileId = 'guest_profile';
-  const referenceId = `earn-run-${summary.id}`;
+  const profileId = getActiveProfileId();
+  const referenceId = profileId === 'guest_profile'
+    ? `earn-run-${summary.id}`
+    : `earn-run-${profileId}-${summary.id}`;
   const coins = calculateRunCoins(summary);
   const xp = calculateRunXP(summary);
   const now = new Date().toISOString();
@@ -67,7 +70,7 @@ export async function awardRunRewards(summary: RunSummary): Promise<{ coinsEarne
     summary.rewardedAt = now;
     summary.coinsEarned = coins;
     summary.xpEarned = xp;
-    await db.runs.put(summary);
+    await db.runs.put({ ...summary, profileId });
 
     return { coinsEarned: coins, xpEarned: xp };
   });

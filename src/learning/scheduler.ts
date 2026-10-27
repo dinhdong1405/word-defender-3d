@@ -1,5 +1,6 @@
 import { LearningRecord, MemoryStage } from '../types/learning';
 import { db } from '../data/db';
+import { getActiveProfileId } from '../auth/authService';
 
 const ONE_MINUTE_MS = 60 * 1000;
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
@@ -73,14 +74,18 @@ export async function updateLearningProgress(
   isCorrect: boolean,
   hadHint: boolean
 ): Promise<LearningRecord> {
-  let record = await db.learningRecords.get(entryId);
+  const profileId = getActiveProfileId();
+  const recordId = `${profileId}:${entryId}`;
+  let record = await db.learningRecords.get(recordId);
   const now = new Date();
 
   const { stage, streak, nextDueAt } = calculateNextReview(record, mode, isCorrect, hadHint, now);
 
   if (!record) {
     record = {
-      entryId,
+      profileId,
+      entryId: recordId,
+      wordId: entryId,
       stage,
       independentRecallStreak: streak,
       easeLevel: 2.5,

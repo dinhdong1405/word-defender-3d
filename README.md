@@ -34,6 +34,15 @@ Game luyện gõ từ vựng tiếng Anh tương tác kết hợp lối chơi th
    - Nhập bộ từ riêng dễ dàng thông qua file Excel (.xlsx) hoặc .csv.
    - Lưu trữ an toàn trên thiết bị (Dexie / IndexedDB) kèm tính năng Sao lưu (Backup) & Khôi phục (Restore).
 
+7. **Tài Khoản, Phiên Đăng Nhập & Phân Quyền**:
+   - Đăng ký, đăng nhập, đăng xuất và đổi mật khẩu ngay trong ứng dụng.
+   - Tài khoản đầu tiên là `admin`; các tài khoản tạo sau có vai trò `player`.
+   - Quản trị viên có thể đổi vai trò, vô hiệu hóa/kích hoạt tài khoản và xem nhật ký bảo mật.
+   - Tiến trình, ví xu, tủ đồ, lịch sử trận và dữ liệu ôn tập được tách theo tài khoản.
+   - Mật khẩu được băm bằng PBKDF2-HMAC-SHA256 với salt ngẫu nhiên và 600.000 vòng; có khóa tạm khi thử sai và timeout phiên.
+
+> **Phạm vi bảo mật:** Đây là hệ thống tài khoản cục bộ/offline; dữ liệu và thông tin xác thực nằm trong IndexedDB của trình duyệt hiện tại. Để đồng bộ đa thiết bị hoặc chống người có toàn quyền truy cập máy/trình duyệt, cần chuyển xác thực và dữ liệu sang backend đáng tin cậy.
+
 ---
 
 ## 🚀 Hướng Dẫn Cài Đặt & Khởi Chạy

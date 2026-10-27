@@ -12,9 +12,13 @@ import { StorePage } from './pages/StorePage';
 import { WardrobePage } from './pages/WardrobePage';
 import { ProgressPage } from './pages/ProgressPage';
 import { SettingsPage } from './pages/SettingsPage';
+import { AdminPage } from './pages/AdminPage';
+import { AuthPage } from './pages/AuthPage';
+import { AuthProvider, useAuth } from './auth/AuthContext';
 
 const AppContent: React.FC = () => {
   const { currentRoute } = useApp();
+  const { isAdmin } = useAuth();
 
   switch (currentRoute) {
     case 'home':
@@ -22,7 +26,7 @@ const AppContent: React.FC = () => {
     case 'library':
       return <LibraryPage />;
     case 'editor':
-      return <WordSetEditorPage />;
+      return isAdmin ? <WordSetEditorPage /> : <HomePage />;
     case 'prepare':
       return <PreparePage />;
     case 'battle':
@@ -39,9 +43,32 @@ const AppContent: React.FC = () => {
       return <ProgressPage />;
     case 'settings':
       return <SettingsPage />;
+    case 'admin':
+      return isAdmin ? <AdminPage /> : <HomePage />;
     default:
       return <HomePage />;
   }
+};
+
+const AuthenticatedApplication: React.FC = () => {
+  const { account, ready } = useAuth();
+
+  if (!ready) {
+    return (
+      <div className="notebook-grid-bg app-loading-screen">
+        <img src="/assets/logo.png" alt="" />
+        <span>Đang kiểm tra phiên đăng nhập…</span>
+      </div>
+    );
+  }
+
+  if (!account) return <AuthPage />;
+
+  return (
+    <AppProvider>
+      <AppContent />
+    </AppProvider>
+  );
 };
 
 export const App: React.FC = () => {
@@ -119,9 +146,9 @@ export const App: React.FC = () => {
   }
 
   return (
-    <AppProvider>
-      <AppContent />
-    </AppProvider>
+    <AuthProvider>
+      <AuthenticatedApplication />
+    </AuthProvider>
   );
 };
 

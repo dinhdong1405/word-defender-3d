@@ -1,5 +1,6 @@
 import { VocabularyEntry } from '../types/vocabulary';
 import { db } from '../data/db';
+import { getActiveProfileId } from '../auth/authService';
 
 export async function selectSessionWords(
   setId: string,
@@ -10,8 +11,8 @@ export async function selectSessionWords(
     return [];
   }
 
-  const allRecords = await db.learningRecords.toArray();
-  const recordMap = new Map(allRecords.map((r) => [r.entryId, r]));
+  const allRecords = await db.learningRecords.where('profileId').equals(getActiveProfileId()).toArray();
+  const recordMap = new Map(allRecords.map((r) => [r.wordId ?? r.entryId, r]));
 
   const now = new Date().toISOString();
 

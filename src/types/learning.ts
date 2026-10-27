@@ -1,7 +1,9 @@
 export type MemoryStage = 'new' | 'learning' | 'remembered' | 'due' | 'struggling';
 
 export interface LearningRecord {
+  profileId?: string;
   entryId: string;
+  wordId?: string;
   stage: MemoryStage;
   independentRecallStreak: number;
   easeLevel: number;             // 0..5
@@ -15,6 +17,7 @@ export interface LearningRecord {
 
 export interface Attempt {
   id: string;
+  profileId?: string;
   runId: string;
   entryId: string;
   mode: 'copy' | 'recall' | 'listen';

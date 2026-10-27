@@ -1,6 +1,7 @@
 import { Attempt } from '../types/learning';
 import { db } from '../data/db';
 import { updateLearningProgress } from './scheduler';
+import { getActiveProfileId } from '../auth/authService';
 
 export async function logAttempt(params: {
   runId: string;
@@ -16,6 +17,7 @@ export async function logAttempt(params: {
 }): Promise<Attempt> {
   const attempt: Attempt = {
     id: `attempt_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+    profileId: getActiveProfileId(),
     ...params,
     occurredAt: new Date().toISOString(),
   };

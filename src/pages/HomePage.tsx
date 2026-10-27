@@ -4,10 +4,13 @@ import { StickerButton } from '../components/StickerButton';
 import { PaperPanel } from '../components/PaperPanel';
 import { CoinBadge } from '../components/CoinBadge';
 import { PonpiPreview } from '../components/PonpiPreview';
-import { BookOpen, ShoppingBag, Shirt, BarChart3, Settings, Play, Flame, Sparkles } from 'lucide-react';
+import { BookOpen, ShoppingBag, Shirt, BarChart3, Play, Flame, Sparkles } from 'lucide-react';
 import { MAP_CONFIGS } from '../config/maps';
+import { useAuth } from '../auth/AuthContext';
+import { AccountMenu } from '../components/AccountMenu';
 
 export const HomePage: React.FC = () => {
+  const { isAdmin } = useAuth();
   const {
     navigateTo,
     wallet,
@@ -92,21 +95,19 @@ export const HomePage: React.FC = () => {
             amount={wallet?.balance || 0}
             showLabel
             size="md"
-            onClick={() => addTestCoins(99999)}
-            title="Click để nhận thêm +99,999 xu test"
+            onClick={isAdmin ? () => addTestCoins(99999) : undefined}
           />
-          <StickerButton
-            size="sm"
-            variant="accent"
-            onClick={() => addTestCoins(99999)}
-            icon={<Sparkles size={16} />}
-            title="Cộng 99,999 xu vào tài khoản test"
-          >
-            +99.999 Xu Test
-          </StickerButton>
-          <StickerButton size="sm" onClick={() => navigateTo('settings')} icon={<Settings size={16} />}>
-            Cài đặt
-          </StickerButton>
+          {isAdmin && (
+            <StickerButton
+              size="sm"
+              variant="accent"
+              onClick={() => addTestCoins(99999)}
+              icon={<Sparkles size={16} />}
+            >
+              +99.999 Xu Test
+            </StickerButton>
+          )}
+          <AccountMenu />
         </div>
       </header>
 

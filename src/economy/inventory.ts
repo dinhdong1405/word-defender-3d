@@ -1,9 +1,10 @@
 import { StoreCategory, StoreItem } from '../types/economy';
 import { STORE_CATALOG } from '../config/catalog';
 import { db } from '../data/db';
+import { getActiveProfileId } from '../auth/authService';
 
 export async function buyStoreItem(itemId: string): Promise<{ success: boolean; newBalance: number }> {
-  const profileId = 'guest_profile';
+  const profileId = getActiveProfileId();
   const item = STORE_CATALOG.find((i) => i.id === itemId);
   if (!item) {
     throw new Error('Món đồ không tồn tại trong cửa hàng.');
@@ -59,7 +60,7 @@ export async function buyStoreItem(itemId: string): Promise<{ success: boolean; 
 }
 
 export async function equipItem(category: StoreCategory, itemId: string | null): Promise<void> {
-  const profileId = 'guest_profile';
+  const profileId = getActiveProfileId();
   const inventory = await db.inventories.get(profileId);
   if (!inventory) return;
 
@@ -88,7 +89,7 @@ export async function equipItem(category: StoreCategory, itemId: string | null):
 }
 
 export async function unequipItem(category: StoreCategory, skillIdToRemove?: string): Promise<void> {
-  const profileId = 'guest_profile';
+  const profileId = getActiveProfileId();
   const inventory = await db.inventories.get(profileId);
   if (!inventory) return;
 

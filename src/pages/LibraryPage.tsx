@@ -6,8 +6,10 @@ import { PaperPanel } from '../components/PaperPanel';
 import { StickerButton } from '../components/StickerButton';
 import { ArrowLeft, Plus, Upload, Trash2, Eye, Download, Check } from 'lucide-react';
 import { generateCsvTemplate } from '../data/importExcel';
+import { useAuth } from '../auth/AuthContext';
 
 export const LibraryPage: React.FC = () => {
+  const { isAdmin } = useAuth();
   const { navigateTo, selectedSetId, setSelectedSetId } = useApp();
   const [sets, setSets] = useState<VocabularySet[]>([]);
   const [search, setSearch] = useState('');
@@ -35,6 +37,7 @@ export const LibraryPage: React.FC = () => {
   };
 
   const handleDelete = async (setId: string, title: string) => {
+    if (!isAdmin) return;
     if (window.confirm(`Bạn có chắc chắn muốn xóa bộ từ "${title}"?`)) {
       await db.transaction('rw', [db.wordSets, db.words], async () => {
         await db.wordSets.delete(setId);
@@ -81,7 +84,7 @@ export const LibraryPage: React.FC = () => {
             Trang Chủ
           </StickerButton>
 
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          {isAdmin && <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             <StickerButton size="sm" onClick={handleDownloadTemplate} icon={<Download size={14} />}>
               Tải Template
             </StickerButton>
@@ -93,7 +96,7 @@ export const LibraryPage: React.FC = () => {
             >
               Import CSV
             </StickerButton>
-          </div>
+          </div>}
         </div>
 
         {/* Page Title & Search */}
@@ -223,7 +226,7 @@ export const LibraryPage: React.FC = () => {
 
                   <StickerButton size="sm" onClick={() => handlePreview(set)} icon={<Eye size={14} />} />
 
-                  {set.owner === 'local' && (
+                  {isAdmin && set.owner === 'local' && (
                     <StickerButton
                       variant="danger"
                       size="sm"

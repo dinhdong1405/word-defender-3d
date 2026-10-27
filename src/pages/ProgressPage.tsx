@@ -7,6 +7,7 @@ import { PaperPanel } from '../components/PaperPanel';
 import { StickerButton } from '../components/StickerButton';
 import { CoinBadge } from '../components/CoinBadge';
 import { ArrowLeft, Award, BookCheck, Flame, History, Target } from 'lucide-react';
+import { getActiveProfileId } from '../auth/authService';
 
 export const ProgressPage: React.FC = () => {
   const { navigateTo, profile, wallet } = useApp();
@@ -22,13 +23,16 @@ export const ProgressPage: React.FC = () => {
 
   useEffect(() => {
     const loadProgress = async () => {
+      const profileId = getActiveProfileId();
       // 1. Last 10 runs
-      const recentRuns = await db.runs.orderBy('startedAt').reverse().limit(10).toArray();
+      const recentRuns = await db.runs.where('profileId').equals(profileId).toArray();
+      recentRuns.sort((left, right) => right.startedAt.localeCompare(left.startedAt));
+      recentRuns.splice(10);
       setRuns(recentRuns);
 
       // 2. Learning Records
       const now = new Date().toISOString();
-      const records = await db.learningRecords.toArray();
+      const records = await db.learningRecords.where('profileId').equals(profileId).toArray();
       const counts: Record<MemoryStage, number> = {
         new: 0,
         learning: 0,
@@ -49,12 +53,12 @@ export const ProgressPage: React.FC = () => {
 
       // Words never reviewed count as 'new'
       const totalWords = await db.words.count();
-      const reviewedWordIds = new Set(records.map((r) => r.entryId));
+      const reviewedWordIds = new Set(records.map((r) => r.wordId ?? r.entryId));
       counts.new = Math.max(0, totalWords - reviewedWordIds.size);
 
       setStageCounts(counts);
 
-      const attemptsCount = await db.attempts.count();
+      const attemptsCount = await db.attempts.where('profileId').equals(profileId).count();
       setTotalAttempts(attemptsCount);
     };
 

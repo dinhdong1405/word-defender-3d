@@ -100,6 +100,7 @@ export interface SkillRuntime {
 
 export interface RunSummary {
   id: string;
+  profileId?: string;
   setId: string;
   mode: GameMode;
   difficulty: Difficulty;

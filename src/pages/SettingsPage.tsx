@@ -4,19 +4,26 @@ import { db } from '../data/db';
 import { exportBackupData, importBackupData } from '../data/backup';
 import { PaperPanel } from '../components/PaperPanel';
 import { StickerButton } from '../components/StickerButton';
-import { ArrowLeft, Download, Upload, Trash2, Volume2, VolumeX, Eye, Sparkles, Coins } from 'lucide-react';
+import { ArrowLeft, Download, Upload, Trash2, Volume2, VolumeX, Eye, Sparkles, Coins, KeyRound, LogOut, ShieldCheck } from 'lucide-react';
+import { changePassword, getSettingsId } from '../auth/authService';
+import { useAuth } from '../auth/AuthContext';
 
 export const SettingsPage: React.FC = () => {
   const { navigateTo, settings, refreshUserData, addTestCoins, wallet } = useApp();
+  const { account, isAdmin, logout, refreshAccount } = useAuth();
   const [audioEnabled, setAudioEnabled] = useState(settings?.audioEnabled ?? true);
   const [reduceMotion, setReduceMotion] = useState(settings?.reduceMotion ?? false);
   const [msg, setMsg] = useState<string | null>(null);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [changingPassword, setChangingPassword] = useState(false);
 
   const saveSettings = async (audio: boolean, motion: boolean) => {
     setAudioEnabled(audio);
     setReduceMotion(motion);
     await db.settings.put({
-      id: 'user_settings',
+      id: getSettingsId(account?.id),
       audioEnabled: audio,
       volume: 0.8,
       reduceMotion: motion,
@@ -72,6 +79,26 @@ export const SettingsPage: React.FC = () => {
     }
   };
 
+  const handlePasswordChange = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (newPassword !== confirmPassword) {
+      showMsg('Mật khẩu xác nhận chưa khớp.');
+      return;
+    }
+    setChangingPassword(true);
+    try {
+      await changePassword(currentPassword, newPassword);
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      await refreshAccount();
+    } catch (caught) {
+      showMsg(caught instanceof Error ? caught.message : 'Không thể đổi mật khẩu.');
+    } finally {
+      setChangingPassword(false);
+    }
+  };
+
   return (
     <div
       className="notebook-grid-bg"
@@ -115,6 +142,44 @@ export const SettingsPage: React.FC = () => {
           )}
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <div className="settings-account-card">
+              <div className="settings-account-summary">
+                <span className="settings-account-avatar">{account?.displayName.charAt(0).toLocaleUpperCase('vi-VN')}</span>
+                <div>
+                  <strong>{account?.displayName}</strong>
+                  <span>{account?.email}</span>
+                  <em><ShieldCheck size={13} /> {isAdmin ? 'Quản trị viên' : 'Người chơi'}</em>
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                {isAdmin && (
+                  <StickerButton size="sm" variant="mint" onClick={() => navigateTo('admin')} icon={<ShieldCheck size={15} />}>
+                    Quản lý người dùng
+                  </StickerButton>
+                )}
+                <StickerButton size="sm" variant="danger" onClick={() => void logout()} icon={<LogOut size={15} />}>
+                  Đăng xuất
+                </StickerButton>
+              </div>
+            </div>
+
+            <form className="settings-password-form" onSubmit={handlePasswordChange}>
+              <div>
+                <div className="settings-section-label"><KeyRound size={18} /> Đổi mật khẩu</div>
+                <p>Mật khẩu mới cần ít nhất 10 ký tự và kết hợp 3 nhóm ký tự.</p>
+              </div>
+              <div className="settings-password-grid">
+                <input type="password" value={currentPassword} onChange={(event) => setCurrentPassword(event.target.value)} autoComplete="current-password" placeholder="Mật khẩu hiện tại" required />
+                <input type="password" value={newPassword} onChange={(event) => setNewPassword(event.target.value)} autoComplete="new-password" placeholder="Mật khẩu mới" minLength={10} maxLength={128} required />
+                <input type="password" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} autoComplete="new-password" placeholder="Nhập lại mật khẩu mới" minLength={10} maxLength={128} required />
+              </div>
+              <StickerButton size="sm" type="submit" disabled={changingPassword}>
+                {changingPassword ? 'Đang đổi…' : 'Cập nhật mật khẩu'}
+              </StickerButton>
+            </form>
+
+            <div style={{ height: '1px', backgroundColor: 'var(--color-grid)' }} />
+
             {/* Audio Toggle */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
@@ -157,10 +222,11 @@ export const SettingsPage: React.FC = () => {
               </StickerButton>
             </div>
 
-            <div style={{ height: '1px', backgroundColor: 'var(--color-grid)' }} />
+            {isAdmin && <>
+              <div style={{ height: '1px', backgroundColor: 'var(--color-grid)' }} />
 
-            {/* Backup & Restore */}
-            <div>
+              {/* Backup & Restore */}
+              <div>
               <div style={{ fontWeight: 800, fontSize: '1.05rem', marginBottom: '4px' }}>
                 Sao Lưu & Phục Hồi Dữ Liệu
               </div>
@@ -191,12 +257,12 @@ export const SettingsPage: React.FC = () => {
                   />
                 </label>
               </div>
-            </div>
+              </div>
 
-            <div style={{ height: '1px', backgroundColor: 'var(--color-grid)' }} />
+              <div style={{ height: '1px', backgroundColor: 'var(--color-grid)' }} />
 
             {/* Test Mode / Developer Tools */}
-            <div
+              <div
               style={{
                 backgroundColor: '#FFFBEB',
                 border: '1.5px dashed #D97706',
@@ -225,12 +291,12 @@ export const SettingsPage: React.FC = () => {
                   Nạp +99.999 Xu Test
                 </StickerButton>
               </div>
-            </div>
+              </div>
 
-            <div style={{ height: '1px', backgroundColor: 'var(--color-grid)' }} />
+              <div style={{ height: '1px', backgroundColor: 'var(--color-grid)' }} />
 
             {/* Reset Data */}
-            <div>
+              <div>
               <div style={{ fontWeight: 800, fontSize: '1.05rem', color: 'var(--color-danger)', marginBottom: '4px' }}>
                 Xóa Toàn Bộ Dữ Liệu Cục Bộ
               </div>
@@ -241,7 +307,8 @@ export const SettingsPage: React.FC = () => {
               <StickerButton variant="danger" size="sm" onClick={handleReset} icon={<Trash2 size={16} />}>
                 Xóa Tiến Trình & Reset Trò Chơi
               </StickerButton>
-            </div>
+              </div>
+            </>}
           </div>
         </PaperPanel>
       </div>
