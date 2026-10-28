@@ -1,20 +1,28 @@
 import React from 'react';
+import {
+  ArrowRight,
+  BarChart3,
+  BookOpen,
+  Flame,
+  MapPinned,
+  Play,
+  Shirt,
+  ShoppingBag,
+  Sparkles,
+  Target,
+  Trophy,
+} from 'lucide-react';
 import { useApp } from '../app/appStore';
+import { useAuth } from '../auth/AuthContext';
 import { StickerButton } from '../components/StickerButton';
 import { PaperPanel } from '../components/PaperPanel';
-import { CoinBadge } from '../components/CoinBadge';
 import { PonpiPreview } from '../components/PonpiPreview';
-import { BookOpen, ShoppingBag, Shirt, BarChart3, Play, Flame, Sparkles } from 'lucide-react';
-import { MAP_CONFIGS, ALL_MAP_IDS, GameMapId } from '../config/maps';
-import { useAuth } from '../auth/AuthContext';
-import { AccountMenu } from '../components/AccountMenu';
-import { getAssetUrl } from '../utils/assetUrl';
+import { ALL_MAP_IDS, MAP_CONFIGS } from '../config/maps';
 
 export const HomePage: React.FC = () => {
   const { isAdmin } = useAuth();
   const {
     navigateTo,
-    wallet,
     profile,
     inventory,
     dueWordsCount,
@@ -23,281 +31,138 @@ export const HomePage: React.FC = () => {
     setSelectedMap,
   } = useApp();
 
+  const currentMap = MAP_CONFIGS[selectedMap] || MAP_CONFIGS.default;
+  const cycleMap = () => {
+    const currentIndex = ALL_MAP_IDS.indexOf(selectedMap);
+    setSelectedMap(ALL_MAP_IDS[(currentIndex + 1) % ALL_MAP_IDS.length]);
+  };
+
+  const quickLinks = [
+    {
+      route: 'library' as const,
+      icon: <BookOpen size={22} />,
+      title: 'Bộ từ vựng',
+      description: 'Chọn chủ đề bạn muốn luyện',
+      tone: 'blue',
+    },
+    {
+      route: 'store' as const,
+      icon: <ShoppingBag size={22} />,
+      title: 'Cửa hàng',
+      description: 'Mở khóa vật phẩm mới',
+      tone: 'yellow',
+    },
+    {
+      route: 'wardrobe' as const,
+      icon: <Shirt size={22} />,
+      title: 'Tủ đồ Ponpi',
+      description: 'Tạo phong cách phi công',
+      tone: 'green',
+    },
+    {
+      route: 'progress' as const,
+      icon: <BarChart3 size={22} />,
+      title: 'Tiến trình',
+      description: 'Xem kết quả và chuỗi học',
+      tone: 'pink',
+    },
+  ];
+
   return (
-    <div
-      className="notebook-grid-bg"
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        padding: '30px 20px',
-      }}
-    >
-      {/* Top Bar with Profile Stats & Coins */}
-      <header
-        style={{
-          width: '100%',
-          maxWidth: '850px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '24px',
-          flexWrap: 'wrap',
-          gap: '10px',
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div
-            style={{
-              padding: '4px 14px 4px 6px',
-              backgroundColor: '#FFFFFF',
-              border: 'var(--border-ink)',
-              borderRadius: 'var(--radius-full)',
-              fontFamily: 'var(--font-display)',
-              fontWeight: 800,
-              fontSize: '0.9rem',
-              boxShadow: 'var(--shadow-sticker-sm)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-            }}
-          >
-            <img src={getAssetUrl('/assets/logo.png')} alt="Ponpi" style={{ width: '24px', height: '24px', objectFit: 'contain' }} />
-            <span>Cấp {profile?.level || 1} • {profile?.xp || 0} XP</span>
+    <div className="home-page app-page">
+      <div className="home-wrap">
+        <section className="home-status" aria-label="Tóm tắt tiến trình">
+          <div className="home-level">
+            <span><Trophy size={16} /></span>
+            <div><small>Cấp độ hiện tại</small><strong>Cấp {profile?.level || 1} · {profile?.xp || 0} XP</strong></div>
           </div>
 
-          {dueWordsCount > 0 && (
-            <div
-              onClick={() => navigateTo('review')}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '4px',
-                padding: '6px 12px',
-                backgroundColor: '#FFE8E8',
-                color: 'var(--color-danger)',
-                border: '1.5px solid var(--color-danger)',
-                borderRadius: 'var(--radius-full)',
-                fontFamily: 'var(--font-display)',
-                fontWeight: 800,
-                fontSize: '0.85rem',
-                cursor: 'pointer',
-              }}
-            >
-              <Flame size={14} />
-              <span>{dueWordsCount} từ cần ôn</span>
-            </div>
-          )}
-        </div>
+          <button type="button" className={`home-review ${dueWordsCount > 0 ? 'has-due' : ''}`} onClick={() => navigateTo('review')}>
+            <Flame size={17} />
+            <span>{dueWordsCount > 0 ? `${dueWordsCount} từ cần ôn` : 'Đã ôn xong hôm nay'}</span>
+            <ArrowRight size={16} />
+          </button>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <CoinBadge
-            amount={wallet?.balance || 0}
-            showLabel
-            size="md"
-            onClick={isAdmin ? () => addTestCoins(99999) : undefined}
-          />
           {isAdmin && (
-            <StickerButton
-              size="sm"
-              variant="accent"
-              onClick={() => addTestCoins(99999)}
-              icon={<Sparkles size={16} />}
-            >
-              +99.999 Xu Test
-            </StickerButton>
+            <button type="button" className="home-test-coins" onClick={() => void addTestCoins(99999)}>
+              <Sparkles size={15} /> Thêm xu test
+            </button>
           )}
-          <AccountMenu />
-        </div>
-      </header>
+        </section>
 
-      {/* Main Hero Section */}
-      <main
-        style={{
-          width: '100%',
-          maxWidth: '850px',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '24px',
-        }}
-      >
-        {/* Game Title: English in Comic Sans, Vietnamese in normal clean font */}
-        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '14px', flexWrap: 'wrap' }}>
-            <img
-              src={getAssetUrl('/assets/logo.png')}
-              alt="Ponpi Logo"
-              style={{
-                width: '64px',
-                height: '64px',
-                objectFit: 'contain',
-                filter: 'drop-shadow(2px 3px 0px var(--color-ink))',
-              }}
-            />
-            <h1
-              style={{
-                fontFamily: 'var(--font-english)',
-                fontSize: 'clamp(2.2rem, 5.5vw, 3.6rem)',
-                fontWeight: 900,
-                color: 'var(--color-ink)',
-                textShadow: '3px 4px 0px var(--color-accent-yellow)',
-                letterSpacing: '0px',
-                lineHeight: 1.1,
-              }}
-            >
-              PONPI: WORD BLASTER
-            </h1>
-          </div>
-          <p
-            style={{
-              fontWeight: 600,
-              fontSize: '1.05rem',
-              color: 'var(--color-muted-ink)',
-              marginTop: '6px',
-            }}
-          >
-            <span style={{ fontFamily: 'var(--font-english)', fontWeight: 700 }}>Learn. Shoot. Remember.</span>{' '}
-            <span style={{ fontFamily: 'var(--font-vietnamese)' }}>— Bắn chữ ôn từ trên giấy ô ly</span>
-          </p>
-        </div>
-
-        {/* Mascot Center Card */}
-        <PaperPanel
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            padding: '24px',
-            width: '100%',
-            maxWidth: '420px',
-          }}
-        >
-          <PonpiPreview
-            styleId={inventory?.equippedStyleId}
-            outfitId={inventory?.equippedOutfitId}
-            scale={1.2}
-            showPoseSelector={false}
-            width={260}
-            height={220}
-          />
-
-          {/* Primary CTA PLAY */}
-          <div style={{ marginTop: '20px', width: '100%' }}>
-            <StickerButton
-              variant="primary"
-              size="lg"
-              onClick={() => navigateTo('prepare')}
-              icon={<Play fill="var(--color-ink)" size={24} />}
-              style={{ width: '100%', padding: '16px 0', fontSize: '1.4rem' }}
-            >
-              CHIẾN ĐẤU NGAY
-            </StickerButton>
-          </div>
-
-          {/* Quick Map Selector Badge on Home */}
-          {(() => {
-            const currentConfig = MAP_CONFIGS[selectedMap] || MAP_CONFIGS.default;
-            const cycleMap = () => {
-              const currentIndex = ALL_MAP_IDS.indexOf(selectedMap);
-              const nextIndex = (currentIndex + 1) % ALL_MAP_IDS.length;
-              setSelectedMap(ALL_MAP_IDS[nextIndex]);
-            };
-
-            return (
-              <div
-                onClick={cycleMap}
-                title="Click để đổi nhanh sang bản đồ tiếp theo"
-                style={{
-                  marginTop: '12px',
-                  width: '100%',
-                  padding: '8px 12px',
-                  backgroundColor: selectedMap === 'default' ? '#F7F7F7' : '#FCF8F5',
-                  border: selectedMap === 'default' ? '1.5px solid var(--color-ink)' : `2px solid ${currentConfig.accentColor}`,
-                  borderRadius: 'var(--radius-md)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  cursor: 'pointer',
-                  boxShadow: 'var(--shadow-sticker-sm)',
-                  transition: 'all 0.15s ease',
-                }}
+        <section className="home-hero">
+          <div className="home-hero-copy">
+            <span className="home-eyebrow"><Target size={15} /> Học từ vựng qua trò chơi</span>
+            <h1><span>Gõ đúng.</span><br />Bắn gọn. Nhớ lâu.</h1>
+            <p>
+              Biến mỗi từ tiếng Anh thành một mục tiêu. Luyện phản xạ, ghi nhớ nghĩa và theo dõi tiến bộ trong cùng một trận đấu.
+            </p>
+            <div className="home-hero-actions">
+              <StickerButton
+                variant="primary"
+                size="lg"
+                onClick={() => navigateTo('prepare')}
+                icon={<Play fill="currentColor" size={21} />}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '1.25rem' }}>{currentConfig.emoji}</span>
-                  <div style={{ textAlign: 'left' }}>
-                    <div style={{ fontSize: '0.7rem', color: 'var(--color-muted-ink)', fontWeight: 800, textTransform: 'uppercase' }}>
-                      Bản Đồ Đang Dùng
-                    </div>
-                    <div style={{ fontSize: '0.88rem', fontWeight: 900, color: selectedMap === 'default' ? 'var(--color-ink)' : currentConfig.accentColor }}>
-                      {currentConfig.name}
-                    </div>
-                  </div>
-                </div>
-                <span
-                  style={{
-                    fontSize: '0.74rem',
-                    fontWeight: 800,
-                    padding: '4px 9px',
-                    backgroundColor: selectedMap === 'default' ? 'var(--color-ink)' : currentConfig.accentColor,
-                    color: '#FFFFFF',
-                    borderRadius: 'var(--radius-full)',
-                  }}
-                >
-                  Đổi Map ↺
-                </span>
-              </div>
-            );
-          })()}
-        </PaperPanel>
+                Chơi ngay
+              </StickerButton>
+              <StickerButton onClick={() => navigateTo('library')} icon={<BookOpen size={19} />}>
+                Chọn bộ từ
+              </StickerButton>
+            </div>
+            <div className="home-note"><span /> Không quảng cáo · Lưu tiến trình trên thiết bị</div>
+          </div>
 
-        {/* Quick Navigation Cards */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-            gap: '12px',
-            width: '100%',
-          }}
-        >
-          <StickerButton
-            variant="default"
-            onClick={() => navigateTo('library')}
-            icon={<BookOpen size={20} />}
-            style={{ padding: '14px 16px', justifyContent: 'flex-start' }}
-          >
-            Bộ Từ Vựng
-          </StickerButton>
+          <PaperPanel className="home-pilot-card">
+            <div className="home-pilot-heading">
+              <div><span>PHI CÔNG CỦA BẠN</span><strong>Sẵn sàng xuất kích</strong></div>
+              <button type="button" onClick={() => navigateTo('wardrobe')}>Đổi trang phục</button>
+            </div>
 
-          <StickerButton
-            variant="accent"
-            onClick={() => navigateTo('store')}
-            icon={<ShoppingBag size={20} />}
-            style={{ padding: '14px 16px', justifyContent: 'flex-start' }}
-          >
-            Cửa Hàng
-          </StickerButton>
+            <div className="home-ponpi-stage">
+              <span className="home-doodle home-doodle-one">✦</span>
+              <span className="home-doodle home-doodle-two">↑</span>
+              <PonpiPreview
+                styleId={inventory?.equippedStyleId}
+                outfitId={inventory?.equippedOutfitId}
+                scale={1.14}
+                showPoseSelector={false}
+                width={280}
+                height={220}
+              />
+            </div>
 
-          <StickerButton
-            variant="mint"
-            onClick={() => navigateTo('wardrobe')}
-            icon={<Shirt size={20} />}
-            style={{ padding: '14px 16px', justifyContent: 'flex-start' }}
-          >
-            Tủ Đồ Ponpi
-          </StickerButton>
+            <button
+              type="button"
+              className="home-map-selector"
+              onClick={cycleMap}
+              style={{ '--map-accent': currentMap.accentColor } as React.CSSProperties}
+              aria-label={`Bản đồ đang chọn: ${currentMap.name}. Nhấn để đổi bản đồ`}
+            >
+              <span className="home-map-icon">{currentMap.emoji}</span>
+              <span><small>Bản đồ đang chọn</small><strong>{currentMap.name}</strong></span>
+              <span className="home-map-change"><MapPinned size={15} /> Đổi</span>
+            </button>
+          </PaperPanel>
+        </section>
 
-          <StickerButton
-            variant="blue"
-            onClick={() => navigateTo('progress')}
-            icon={<BarChart3 size={20} />}
-            style={{ padding: '14px 16px', justifyContent: 'flex-start' }}
-          >
-            Tiến Trình Học
-          </StickerButton>
-        </div>
-      </main>
+        <section className="home-quick-section" aria-labelledby="home-quick-title">
+          <div className="home-section-heading">
+            <div><span>KHÁM PHÁ PONPI</span><h2 id="home-quick-title">Bạn muốn làm gì tiếp theo?</h2></div>
+            <button type="button" onClick={() => navigateTo('progress')}>Xem tổng quan <ArrowRight size={16} /></button>
+          </div>
+
+          <div className="home-quick-grid">
+            {quickLinks.map((item) => (
+              <button type="button" key={item.route} className={`home-quick-card tone-${item.tone}`} onClick={() => navigateTo(item.route)}>
+                <span className="home-quick-icon">{item.icon}</span>
+                <span><strong>{item.title}</strong><small>{item.description}</small></span>
+                <ArrowRight className="home-quick-arrow" size={18} />
+              </button>
+            ))}
+          </div>
+        </section>
+      </div>
     </div>
   );
 };

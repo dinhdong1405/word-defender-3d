@@ -16,39 +16,54 @@ import { AdminPage } from './pages/AdminPage';
 import { AuthPage } from './pages/AuthPage';
 import { AuthProvider, useAuth } from './auth/AuthContext';
 import { getAssetUrl } from './utils/assetUrl';
+import { AppShell } from './components/AppShell';
 
 const AppContent: React.FC = () => {
   const { currentRoute } = useApp();
   const { isAdmin } = useAuth();
 
+  let page: React.ReactNode;
   switch (currentRoute) {
     case 'home':
-      return <HomePage />;
+      page = <HomePage />;
+      break;
     case 'library':
-      return <LibraryPage />;
+      page = <LibraryPage />;
+      break;
     case 'editor':
-      return isAdmin ? <WordSetEditorPage /> : <HomePage />;
+      page = isAdmin ? <WordSetEditorPage /> : <HomePage />;
+      break;
     case 'prepare':
-      return <PreparePage />;
+      page = <PreparePage />;
+      break;
     case 'battle':
       return <BattlePage />;
     case 'results':
-      return <ResultsPage />;
+      page = <ResultsPage />;
+      break;
     case 'review':
-      return <ReviewPage />;
+      page = <ReviewPage />;
+      break;
     case 'store':
-      return <StorePage />;
+      page = <StorePage />;
+      break;
     case 'wardrobe':
-      return <WardrobePage />;
+      page = <WardrobePage />;
+      break;
     case 'progress':
-      return <ProgressPage />;
+      page = <ProgressPage />;
+      break;
     case 'settings':
-      return <SettingsPage />;
+      page = <SettingsPage />;
+      break;
     case 'admin':
-      return isAdmin ? <AdminPage /> : <HomePage />;
+      page = isAdmin ? <AdminPage /> : <HomePage />;
+      break;
     default:
-      return <HomePage />;
+      page = <HomePage />;
   }
+
+  return <AppShell>{page}</AppShell>;
 };
 
 const AuthenticatedApplication: React.FC = () => {

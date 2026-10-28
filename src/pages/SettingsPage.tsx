@@ -101,7 +101,7 @@ export const SettingsPage: React.FC = () => {
 
   return (
     <div
-      className="notebook-grid-bg"
+      className="notebook-grid-bg app-page"
       style={{
         minHeight: '100vh',
         padding: '30px 20px',

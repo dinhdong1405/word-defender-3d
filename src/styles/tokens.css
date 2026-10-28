@@ -1,23 +1,24 @@
 :root {
   --color-paper: #FBF8F0;
-  --color-grid: #F5A26B;
-  --color-grid-line: rgba(214, 165, 126, 0.18);
-  --color-grid-soft: rgba(245, 162, 107, 0.45);
-  --color-ink: #25232B;
-  --color-muted-ink: #6E6A72;
-  --color-ponpi-pink: #F58AB0;
-  --color-ponpi-pink-dark: #E06C96;
-  --color-alien-purple: #C69BEC;
-  --color-alien-purple-dark: #9E70C7;
-  --color-accent-yellow: #FFD47D;
-  --color-accent-yellow-dark: #E2B252;
-  --color-accent-mint: #A9DDC3;
-  --color-accent-mint-dark: #7DBE9F;
-  --color-danger: #EF6E78;
-  --color-danger-dark: #D44E58;
-  --color-info-blue: #70B9E1;
-  --color-info-blue-dark: #4A96C2;
-  --color-card-bg: #FFFFFF;
+  --color-paper-deep: #F2EBDD;
+  --color-grid: #C98E62;
+  --color-grid-line: rgba(180, 132, 91, 0.16);
+  --color-grid-soft: rgba(201, 142, 98, 0.34);
+  --color-ink: #282623;
+  --color-muted-ink: #706C65;
+  --color-ponpi-pink: #EE7772;
+  --color-ponpi-pink-dark: #D75D59;
+  --color-alien-purple: #B898D6;
+  --color-alien-purple-dark: #8F6FAE;
+  --color-accent-yellow: #F5CC70;
+  --color-accent-yellow-dark: #D9AE50;
+  --color-accent-mint: #AFCB86;
+  --color-accent-mint-dark: #8DA967;
+  --color-danger: #E26464;
+  --color-danger-dark: #C74D4D;
+  --color-info-blue: #8DBDD1;
+  --color-info-blue-dark: #6599AF;
+  --color-card-bg: #FFFEFA;
 
   --border-ink-thin: 1.5px solid var(--color-ink);
   --border-ink: 2.5px solid var(--color-ink);
@@ -34,14 +35,14 @@
   --font-body: 'Be Vietnam Pro', 'Inter', 'Segoe UI', -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  --shadow-sticker: 3px 4px 0px var(--color-ink);
-  --shadow-sticker-sm: 2px 2px 0px var(--color-ink);
-  --shadow-sticker-lg: 5px 6px 0px var(--color-ink);
-  --shadow-sticker-hover: 4px 5px 0px var(--color-ink);
-  --shadow-sticker-active: 1px 1px 0px var(--color-ink);
+  --shadow-sticker: 0 3px 0 var(--color-ink), 0 10px 24px rgba(58, 46, 36, 0.08);
+  --shadow-sticker-sm: 0 2px 0 var(--color-ink);
+  --shadow-sticker-lg: 0 4px 0 var(--color-ink), 0 14px 32px rgba(58, 46, 36, 0.11);
+  --shadow-sticker-hover: 0 4px 0 var(--color-ink), 0 14px 28px rgba(58, 46, 36, 0.1);
+  --shadow-sticker-active: 0 1px 0 var(--color-ink);
 
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 20px;
+  --radius-sm: 9px;
+  --radius-md: 13px;
+  --radius-lg: 18px;
   --radius-full: 9999px;
 }

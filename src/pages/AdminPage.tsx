@@ -64,7 +64,7 @@ export const AdminPage: React.FC = () => {
   };
 
   return (
-    <div className="admin-shell notebook-grid-bg">
+    <div className="admin-shell notebook-grid-bg app-page">
       <div className="admin-wrap">
         <div className="admin-topbar">
           <StickerButton onClick={() => navigateTo('home')} icon={<ArrowLeft size={18} />}>Trang chủ</StickerButton>

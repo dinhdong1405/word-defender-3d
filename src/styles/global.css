@@ -2,6 +2,8 @@
 @import './notebook-grid.css';
 @import './auth.css';
 @import './admin.css';
+@import './app-shell.css';
+@import './home.css';
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -17,6 +19,7 @@ html, body {
   color: var(--color-ink);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 html { height: auto; }
@@ -27,6 +30,14 @@ body { min-height: 100vh; height: auto; }
   display: flex;
   flex-direction: column;
 }
+
+button, input, select, textarea { font: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 3px solid rgba(112, 185, 225, .38);
+  outline-offset: 2px;
+}
+::selection { background: rgba(238, 119, 114, .24); }
 
 .app-loading-screen {
   min-height: 100vh;
@@ -103,18 +114,18 @@ body { min-height: 100vh; height: auto; }
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sticker);
   cursor: pointer;
-  transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease, color .16s ease;
   user-select: none;
   text-decoration: none;
 }
 
 .sticker-btn:hover:not(:disabled) {
-  transform: translate(-1px, -1px);
+  transform: translateY(-1px);
   box-shadow: var(--shadow-sticker-hover);
 }
 
 .sticker-btn:active:not(:disabled) {
-  transform: translate(2px, 2px);
+  transform: translateY(2px);
   box-shadow: var(--shadow-sticker-active);
 }
 
@@ -174,12 +185,46 @@ body { min-height: 100vh; height: auto; }
 
 /* Paper Panels */
 .paper-panel {
-  background-color: #FFFFFF;
+  background-color: rgba(255, 254, 250, .96);
   border: var(--border-ink);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sticker);
   padding: 20px;
   position: relative;
+}
+
+.app-page {
+  min-height: calc(100vh - 76px);
+}
+
+.app-shell-content > .notebook-grid-bg {
+  min-height: calc(100vh - 76px) !important;
+  background: transparent;
+}
+
+.app-shell-content > .notebook-grid-bg > div {
+  min-width: 0;
+}
+
+@media (max-width: 760px) {
+  .app-page { min-height: calc(100vh - 64px); }
+  .app-shell-content > .notebook-grid-bg {
+    min-height: calc(100vh - 64px) !important;
+    padding: 20px 14px calc(94px + env(safe-area-inset-bottom)) !important;
+  }
+  .app-shell-content h1 { font-size: clamp(1.65rem, 8vw, 2.15rem) !important; line-height: 1.15; }
+  .paper-panel { padding: 16px; }
+  input, select, textarea { font-size: 16px !important; }
+  .mobile-stack-grid { grid-template-columns: minmax(0, 1fr) !important; }
+  .prepare-set-row { align-items: stretch !important; flex-direction: column; }
+  .prepare-set-row select { min-width: 0; width: 100%; }
+  .prepare-set-row .sticker-btn { width: 100%; }
+  .prepare-mode-grid { grid-template-columns: minmax(0, 1fr) !important; }
+  .prepare-map-heading { align-items: flex-start !important; flex-direction: column; gap: 5px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
 
 /* Custom Scrollbars */

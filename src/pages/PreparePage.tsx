@@ -83,7 +83,7 @@ export const PreparePage: React.FC = () => {
 
   return (
     <div
-      className="notebook-grid-bg"
+      className="notebook-grid-bg app-page"
       style={{
         minHeight: '100vh',
         padding: '30px 20px',
@@ -115,7 +115,7 @@ export const PreparePage: React.FC = () => {
               <label style={{ display: 'block', fontWeight: 800, marginBottom: '8px', fontSize: '1.05rem' }}>
                 1. Bộ Từ Vựng Đang Chọn:
               </label>
-              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+              <div className="prepare-set-row" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                 <select
                   value={selectedSetId}
                   onChange={(e) => handleSetChange(e.target.value)}
@@ -148,7 +148,7 @@ export const PreparePage: React.FC = () => {
               <label style={{ display: 'block', fontWeight: 800, marginBottom: '8px', fontSize: '1.05rem' }}>
                 2. Chế Độ Bắn Chữ (Game Mode):
               </label>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '10px' }}>
+              <div className="prepare-mode-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '10px' }}>
                 {modes.map((m) => {
                   const isSelected = selectedMode === m.id;
                   return (
@@ -215,7 +215,7 @@ export const PreparePage: React.FC = () => {
 
             {/* 4. Chọn Bản Đồ (Map / Chiến Trường) */}
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+              <div className="prepare-map-heading" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
                 <label style={{ fontWeight: 800, fontSize: '1.05rem' }}>
                   4. Chọn Bản Đồ (Map / Chiến Trường):
                 </label>
