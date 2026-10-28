@@ -6,6 +6,7 @@ import { PaperPanel } from '../components/PaperPanel';
 import { StickerButton } from '../components/StickerButton';
 import { PonpiPreview } from '../components/PonpiPreview';
 import { StoreCategory } from '../types/economy';
+import { getAssetUrl } from '../utils/assetUrl';
 import { ArrowLeft, Play, Shirt, ShoppingBag, X } from 'lucide-react';
 
 export const WardrobePage: React.FC = () => {
@@ -184,7 +185,7 @@ export const WardrobePage: React.FC = () => {
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             {item.iconUrl ? (
                               <img
-                                src={item.iconUrl}
+                                src={getAssetUrl(item.iconUrl)}
                                 alt={item.title}
                                 style={{
                                   width: '26px',

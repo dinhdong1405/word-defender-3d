@@ -8,6 +8,7 @@ import { BookOpen, ShoppingBag, Shirt, BarChart3, Play, Flame, Sparkles } from '
 import { MAP_CONFIGS, ALL_MAP_IDS, GameMapId } from '../config/maps';
 import { useAuth } from '../auth/AuthContext';
 import { AccountMenu } from '../components/AccountMenu';
+import { getAssetUrl } from '../utils/assetUrl';
 
 export const HomePage: React.FC = () => {
   const { isAdmin } = useAuth();
@@ -62,7 +63,7 @@ export const HomePage: React.FC = () => {
               gap: '6px',
             }}
           >
-            <img src="/assets/logo.png" alt="Ponpi" style={{ width: '24px', height: '24px', objectFit: 'contain' }} />
+            <img src={getAssetUrl('/assets/logo.png')} alt="Ponpi" style={{ width: '24px', height: '24px', objectFit: 'contain' }} />
             <span>Cấp {profile?.level || 1} • {profile?.xp || 0} XP</span>
           </div>
 
@@ -126,7 +127,7 @@ export const HomePage: React.FC = () => {
         <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '14px', flexWrap: 'wrap' }}>
             <img
-              src="/assets/logo.png"
+              src={getAssetUrl('/assets/logo.png')}
               alt="Ponpi Logo"
               style={{
                 width: '64px',

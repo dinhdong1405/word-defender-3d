@@ -9,6 +9,7 @@ import { CoinBadge } from '../components/CoinBadge';
 import { ArrowLeft, Play, Eye, EyeOff, BookOpen, Volume2, SpellCheck, BrainCircuit, ShieldAlert } from 'lucide-react';
 import { STORE_CATALOG } from '../config/catalog';
 import { MAP_CONFIGS, GameMapId, ALL_MAP_IDS } from '../config/maps';
+import { getAssetUrl } from '../utils/assetUrl';
 
 export const PreparePage: React.FC = () => {
   const {
@@ -285,7 +286,7 @@ export const PreparePage: React.FC = () => {
                             borderRadius: '8px',
                             border: '1.5px solid var(--color-ink)',
                             backgroundColor: mapInfo.previewBg,
-                            backgroundImage: mapInfo.previewImage ? `url(${mapInfo.previewImage})` : 'none',
+                            backgroundImage: mapInfo.previewImage ? `url(${getAssetUrl(mapInfo.previewImage)})` : 'none',
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',
                             position: 'relative',

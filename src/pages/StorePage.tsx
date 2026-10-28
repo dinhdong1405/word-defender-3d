@@ -6,6 +6,7 @@ import { buyStoreItem, equipItem } from '../economy/inventory';
 import { PaperPanel } from '../components/PaperPanel';
 import { StickerButton } from '../components/StickerButton';
 import { CoinBadge } from '../components/CoinBadge';
+import { getAssetUrl } from '../utils/assetUrl';
 import { PonpiPreview } from '../components/PonpiPreview';
 import { ArrowLeft, ShoppingBag, Check, Sparkles, Shirt } from 'lucide-react';
 
@@ -198,7 +199,7 @@ export const StorePage: React.FC = () => {
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         {item.iconUrl ? (
                           <img
-                            src={item.iconUrl}
+                            src={getAssetUrl(item.iconUrl)}
                             alt={item.title}
                             style={{
                               width: '28px',

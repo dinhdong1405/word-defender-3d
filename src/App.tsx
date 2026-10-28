@@ -15,6 +15,7 @@ import { SettingsPage } from './pages/SettingsPage';
 import { AdminPage } from './pages/AdminPage';
 import { AuthPage } from './pages/AuthPage';
 import { AuthProvider, useAuth } from './auth/AuthContext';
+import { getAssetUrl } from './utils/assetUrl';
 
 const AppContent: React.FC = () => {
   const { currentRoute } = useApp();
@@ -56,7 +57,7 @@ const AuthenticatedApplication: React.FC = () => {
   if (!ready) {
     return (
       <div className="notebook-grid-bg app-loading-screen">
-        <img src="/assets/logo.png" alt="" />
+        <img src={getAssetUrl('/assets/logo.png')} alt="" />
         <span>Đang kiểm tra phiên đăng nhập…</span>
       </div>
     );

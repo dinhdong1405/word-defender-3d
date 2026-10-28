@@ -16,6 +16,8 @@ import { GAME_BALANCE } from '../../config/balance';
  * - Retains dashed defense perimeter line near Ponpi
  */
 
+import { getAssetUrl } from '../../utils/assetUrl';
+
 export interface SvgMapRenderOptions {
   reduceMotion?: boolean;
   defenseLineY?: number;
@@ -30,7 +32,7 @@ export function getSvgMapImage(svgUrl: string): HTMLImageElement | null {
 
   if (!imageCache[svgUrl]) {
     const img = new Image();
-    img.src = svgUrl;
+    img.src = getAssetUrl(svgUrl);
     img.onload = () => {
       loadedCache[svgUrl] = true;
     };

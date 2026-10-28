@@ -4,6 +4,7 @@ import { useAuth } from '../auth/AuthContext';
 import { validatePassword } from '../auth/authService';
 import { PaperPanel } from '../components/PaperPanel';
 import { StickerButton } from '../components/StickerButton';
+import { getAssetUrl } from '../utils/assetUrl';
 
 type AuthMode = 'login' | 'register';
 
@@ -55,7 +56,7 @@ export const AuthPage: React.FC = () => {
       <div className="auth-layout">
         <section className="auth-intro" aria-labelledby="auth-title">
           <div className="auth-brand">
-            <img src="/assets/logo.png" alt="" className="auth-logo" />
+            <img src={getAssetUrl('/assets/logo.png')} alt="" className="auth-logo" />
             <span>PONPI</span>
           </div>
           <h1 id="auth-title">Mỗi phi công,<br />một hành trình riêng.</h1>
