@@ -4,7 +4,7 @@ import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: process.env.NODE_ENV === 'production' ? '/word-defender-3d/' : '/',
+  base: process.env.GITHUB_ACTIONS === 'true' ? '/word-defender-3d/' : '/',
   plugins: [react()],
   server: {
     fs: {
