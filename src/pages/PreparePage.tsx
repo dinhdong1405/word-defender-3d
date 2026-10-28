@@ -8,7 +8,7 @@ import { StickerButton } from '../components/StickerButton';
 import { CoinBadge } from '../components/CoinBadge';
 import { ArrowLeft, Play, Eye, EyeOff, BookOpen, Volume2, SpellCheck, BrainCircuit, ShieldAlert } from 'lucide-react';
 import { STORE_CATALOG } from '../config/catalog';
-import { MAP_CONFIGS, GameMapId } from '../config/maps';
+import { MAP_CONFIGS, GameMapId, ALL_MAP_IDS } from '../config/maps';
 
 export const PreparePage: React.FC = () => {
   const {
@@ -223,10 +223,10 @@ export const PreparePage: React.FC = () => {
                 </span>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '12px' }}>
-                {(['default', 'red-canyon'] as GameMapId[]).map((mapId) => {
+                {ALL_MAP_IDS.map((mapId) => {
                   const mapInfo = MAP_CONFIGS[mapId];
                   const isSelected = selectedMap === mapId;
-                  const isRed = mapId === 'red-canyon';
+                  const isDefault = mapId === 'default';
 
                   return (
                     <div
@@ -234,9 +234,9 @@ export const PreparePage: React.FC = () => {
                       onClick={() => setSelectedMap(mapId)}
                       style={{
                         padding: '14px',
-                        backgroundColor: isSelected ? (isRed ? '#FFF4EE' : '#F6F9FA') : '#FFFFFF',
+                        backgroundColor: isSelected ? (isDefault ? '#F6F9FA' : '#FCF8F5') : '#FFFFFF',
                         border: isSelected
-                          ? (isRed ? '3px solid #DE764A' : '3px solid var(--color-ink)')
+                          ? (isDefault ? '3px solid var(--color-ink)' : `3px solid ${mapInfo.accentColor}`)
                           : '1.5px solid var(--color-ink)',
                         borderRadius: 'var(--radius-md)',
                         boxShadow: isSelected ? 'var(--shadow-sticker-hover)' : 'var(--shadow-sticker-sm)',
@@ -255,7 +255,7 @@ export const PreparePage: React.FC = () => {
                             fontWeight: 900,
                             padding: '2px 8px',
                             borderRadius: 'var(--radius-full)',
-                            backgroundColor: isRed ? '#FF5722' : 'var(--color-muted-ink)',
+                            backgroundColor: isDefault ? 'var(--color-muted-ink)' : mapInfo.accentColor,
                             color: '#FFFFFF',
                           }}
                         >
@@ -266,7 +266,7 @@ export const PreparePage: React.FC = () => {
                             style={{
                               fontSize: '0.78rem',
                               fontWeight: 900,
-                              color: isRed ? '#D04E20' : '#16A34A',
+                              color: isDefault ? '#16A34A' : mapInfo.accentColor,
                               display: 'flex',
                               alignItems: 'center',
                               gap: '2px',
@@ -280,54 +280,21 @@ export const PreparePage: React.FC = () => {
                       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <div
                           style={{
-                            width: '46px',
-                            height: '46px',
+                            width: '58px',
+                            height: '58px',
                             borderRadius: '8px',
                             border: '1.5px solid var(--color-ink)',
                             backgroundColor: mapInfo.previewBg,
-                            backgroundImage: isRed
-                              ? 'linear-gradient(to bottom, #E88B60, #BD4D2A)'
-                              : 'none',
+                            backgroundImage: mapInfo.previewImage ? `url(${mapInfo.previewImage})` : 'none',
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
                             position: 'relative',
                             overflow: 'hidden',
                             flexShrink: 0,
-                            boxShadow: '1px 1px 0 var(--color-ink)',
+                            boxShadow: '1px 1.5px 0 var(--color-ink)',
                           }}
                         >
-                          {isRed ? (
-                            <>
-                              <div
-                                style={{
-                                  position: 'absolute',
-                                  left: 0,
-                                  top: 0,
-                                  bottom: 0,
-                                  width: '9px',
-                                  backgroundColor: '#281311',
-                                }}
-                              />
-                              <div
-                                style={{
-                                  position: 'absolute',
-                                  right: 0,
-                                  top: 0,
-                                  bottom: 0,
-                                  width: '9px',
-                                  backgroundColor: '#281311',
-                                }}
-                              />
-                              <div
-                                style={{
-                                  position: 'absolute',
-                                  bottom: '5px',
-                                  left: '11px',
-                                  right: '11px',
-                                  height: '1px',
-                                  borderBottom: '1px dashed #FFE082',
-                                }}
-                              />
-                            </>
-                          ) : (
+                          {!mapInfo.previewImage && (
                             <div
                               style={{
                                 width: '100%',
@@ -340,9 +307,12 @@ export const PreparePage: React.FC = () => {
                           )}
                         </div>
 
-                        <div>
-                          <div style={{ fontWeight: 800, fontSize: '0.98rem', color: 'var(--color-ink)' }}>
-                            {mapInfo.name}
+                        <div style={{ minWidth: 0, flex: 1 }}>
+                          <div style={{ fontWeight: 800, fontSize: '0.98rem', color: 'var(--color-ink)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <span>{mapInfo.emoji}</span>
+                            <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                              {mapInfo.name}
+                            </span>
                           </div>
                           <div style={{ fontSize: '0.78rem', color: 'var(--color-muted-ink)', marginTop: '2px', lineHeight: 1.3 }}>
                             {mapInfo.tagline}

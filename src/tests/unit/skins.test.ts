@@ -3,6 +3,16 @@ import { STORE_CATALOG, DEFAULT_INVENTORY_SEED } from '../../config/catalog';
 import {
   getStyleColor,
   getSpriteForOutfit,
+  CORAL_SPRITE_URLS,
+  FOOTBALL_SPRITE_URLS,
+  MUSICIAN_SPRITE_URLS,
+  HACKER_SPRITE_URLS,
+  SHINOBI_SPRITE_URLS,
+  DINO_SPRITE_URLS,
+  BANANA_CAT_SPRITE_URLS,
+  BOBA_RABBIT_SPRITE_URLS,
+  TEDDY_BEAR_SPRITE_URLS,
+  HUNTER_SPRITE_URLS,
   HALLOWEEN_SPRITE_URLS,
   BASKETBALL_SPRITE_URLS,
   SOCCER_SPRITE_URLS,
@@ -12,8 +22,22 @@ import {
 import { equipItem, unequipItem } from '../../economy/inventory';
 import { db } from '../../data/db';
 
-describe('5 New Skins & Color Customization', () => {
-  const newSkinIds = [
+describe('New Skins & Color Customization', () => {
+  const brandNewSkinIds = [
+    'outfit_coral',
+    'outfit_football',
+    'outfit_musician',
+    'outfit_hacker',
+    'outfit_shinobi',
+    'outfit_dino',
+    'outfit_banana_cat',
+    'outfit_boba_rabbit',
+    'outfit_teddy_bear',
+    'outfit_hunter',
+  ];
+
+  const allSkinIds = [
+    ...brandNewSkinIds,
     'outfit_halloween',
     'outfit_basketball',
     'outfit_soccer',
@@ -21,8 +45,8 @@ describe('5 New Skins & Color Customization', () => {
     'outfit_gladiator',
   ];
 
-  it('contains all 5 new skins in STORE_CATALOG with valid properties', () => {
-    for (const skinId of newSkinIds) {
+  it('contains all new skins in STORE_CATALOG with valid properties', () => {
+    for (const skinId of brandNewSkinIds) {
       const item = STORE_CATALOG.find((i) => i.id === skinId);
       expect(item).toBeDefined();
       expect(item?.category).toBe('outfit');
@@ -43,8 +67,18 @@ describe('5 New Skins & Color Customization', () => {
     expect(getStyleColor('style_purple')).toMatch(/^#[0-9A-Fa-f]{6}$/);
   });
 
-  it('provides all 6 action pose URLs for all 5 new skins', () => {
+  it('provides all 6 action pose URLs for all new skins', () => {
     const maps = [
+      CORAL_SPRITE_URLS,
+      FOOTBALL_SPRITE_URLS,
+      MUSICIAN_SPRITE_URLS,
+      HACKER_SPRITE_URLS,
+      SHINOBI_SPRITE_URLS,
+      DINO_SPRITE_URLS,
+      BANANA_CAT_SPRITE_URLS,
+      BOBA_RABBIT_SPRITE_URLS,
+      TEDDY_BEAR_SPRITE_URLS,
+      HUNTER_SPRITE_URLS,
       HALLOWEEN_SPRITE_URLS,
       BASKETBALL_SPRITE_URLS,
       SOCCER_SPRITE_URLS,
@@ -63,14 +97,14 @@ describe('5 New Skins & Color Customization', () => {
   });
 
   it('resolves correct sprite elements for all outfits and poses', () => {
-    for (const skinId of newSkinIds) {
+    for (const skinId of allSkinIds) {
       const sprite = getSpriteForOutfit(skinId, 'idle');
       expect(sprite).toBeDefined();
       expect(sprite instanceof Image).toBe(true);
     }
   });
 
-  it('allows equipping any of the 5 skins alongside a purple body style', async () => {
+  it('allows equipping any of the skins alongside a purple body style', async () => {
     await db.inventories.clear();
     const profileId = 'guest_profile';
 
@@ -80,7 +114,7 @@ describe('5 New Skins & Color Customization', () => {
         'style_yellow',
         'style_lavender',
         'style_purple',
-        ...newSkinIds,
+        ...allSkinIds,
       ],
       equippedHatId: null,
       equippedShirtId: null,
@@ -93,28 +127,34 @@ describe('5 New Skins & Color Customization', () => {
     let inv = await db.inventories.get(profileId);
     expect(inv?.equippedStyleId).toBe('style_purple');
 
-    // 2. Equip Basketball skin
-    await equipItem('outfit', 'outfit_basketball');
+    // 2. Equip Coral skin
+    await equipItem('outfit', 'outfit_coral');
     inv = await db.inventories.get(profileId);
-    expect(inv?.equippedOutfitId).toBe('outfit_basketball');
+    expect(inv?.equippedOutfitId).toBe('outfit_coral');
     // Confirm body color remains purple!
     expect(inv?.equippedStyleId).toBe('style_purple');
 
-    // 3. Equip Halloween skin
-    await equipItem('outfit', 'outfit_halloween');
+    // 3. Equip Football #10 skin
+    await equipItem('outfit', 'outfit_football');
     inv = await db.inventories.get(profileId);
-    expect(inv?.equippedOutfitId).toBe('outfit_halloween');
+    expect(inv?.equippedOutfitId).toBe('outfit_football');
     expect(inv?.equippedStyleId).toBe('style_purple');
 
-    // 4. Unequip outfit back to default Ponpi with purple body
+    // 4. Equip Hacker skin
+    await equipItem('outfit', 'outfit_hacker');
+    inv = await db.inventories.get(profileId);
+    expect(inv?.equippedOutfitId).toBe('outfit_hacker');
+    expect(inv?.equippedStyleId).toBe('style_purple');
+
+    // 5. Unequip outfit back to default Ponpi with purple body
     await unequipItem('outfit');
     inv = await db.inventories.get(profileId);
     expect(inv?.equippedOutfitId).toBeNull();
     expect(inv?.equippedStyleId).toBe('style_purple');
   });
 
-  it('includes all 5 new skins and purple styles in DEFAULT_INVENTORY_SEED', () => {
-    for (const skinId of newSkinIds) {
+  it('includes all new skins and purple styles in DEFAULT_INVENTORY_SEED', () => {
+    for (const skinId of brandNewSkinIds) {
       expect(DEFAULT_INVENTORY_SEED.ownedItemIds).toContain(skinId);
     }
     expect(DEFAULT_INVENTORY_SEED.ownedItemIds).toContain('style_lavender');

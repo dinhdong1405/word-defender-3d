@@ -71,6 +71,86 @@ import gladiatorFireUpRightUrl from './gladiator/gladiator_fire_up_right.png';
 import gladiatorFireLeftUrl from './gladiator/gladiator_fire_left.png';
 import gladiatorFireRightUrl from './gladiator/gladiator_fire_right.png';
 
+// 6 Dino Action Poses
+import dinoIdleUrl from './dino/dino_idle.png';
+import dinoFireUpUrl from './dino/dino_fire_up.png';
+import dinoFireUpLeftUrl from './dino/dino_fire_up_left.png';
+import dinoFireUpRightUrl from './dino/dino_fire_up_right.png';
+import dinoFireLeftUrl from './dino/dino_fire_left.png';
+import dinoFireRightUrl from './dino/dino_fire_right.png';
+
+// 6 Banana Cat Action Poses
+import bananaCatIdleUrl from './banana_cat/banana_cat_idle.png';
+import bananaCatFireUpUrl from './banana_cat/banana_cat_fire_up.png';
+import bananaCatFireUpLeftUrl from './banana_cat/banana_cat_fire_up_left.png';
+import bananaCatFireUpRightUrl from './banana_cat/banana_cat_fire_up_right.png';
+import bananaCatFireLeftUrl from './banana_cat/banana_cat_fire_left.png';
+import bananaCatFireRightUrl from './banana_cat/banana_cat_fire_right.png';
+
+// 6 Boba Rabbit Action Poses
+import bobaRabbitIdleUrl from './boba_rabbit/boba_rabbit_idle.png';
+import bobaRabbitFireUpUrl from './boba_rabbit/boba_rabbit_fire_up.png';
+import bobaRabbitFireUpLeftUrl from './boba_rabbit/boba_rabbit_fire_up_left.png';
+import bobaRabbitFireUpRightUrl from './boba_rabbit/boba_rabbit_fire_up_right.png';
+import bobaRabbitFireLeftUrl from './boba_rabbit/boba_rabbit_fire_left.png';
+import bobaRabbitFireRightUrl from './boba_rabbit/boba_rabbit_fire_right.png';
+
+// 6 Teddy Bear Action Poses
+import teddyBearIdleUrl from './teddy_bear/teddy_bear_idle.png';
+import teddyBearFireUpUrl from './teddy_bear/teddy_bear_fire_up.png';
+import teddyBearFireUpLeftUrl from './teddy_bear/teddy_bear_fire_up_left.png';
+import teddyBearFireUpRightUrl from './teddy_bear/teddy_bear_fire_up_right.png';
+import teddyBearFireLeftUrl from './teddy_bear/teddy_bear_fire_left.png';
+import teddyBearFireRightUrl from './teddy_bear/teddy_bear_fire_right.png';
+
+// 6 Hunter Action Poses
+import hunterIdleUrl from './hunter/hunter_idle.png';
+import hunterFireUpUrl from './hunter/hunter_fire_up.png';
+import hunterFireUpLeftUrl from './hunter/hunter_fire_up_left.png';
+import hunterFireUpRightUrl from './hunter/hunter_fire_up_right.png';
+import hunterFireLeftUrl from './hunter/hunter_fire_left.png';
+import hunterFireRightUrl from './hunter/hunter_fire_right.png';
+
+// 6 Coral Action Poses
+import coralIdleUrl from './coral/coral_idle.png';
+import coralFireUpUrl from './coral/coral_fire_up.png';
+import coralFireUpLeftUrl from './coral/coral_fire_up_left.png';
+import coralFireUpRightUrl from './coral/coral_fire_up_right.png';
+import coralFireLeftUrl from './coral/coral_fire_left.png';
+import coralFireRightUrl from './coral/coral_fire_right.png';
+
+// 6 Football #10 Action Poses
+import footballIdleUrl from './football/football_idle.png';
+import footballFireUpUrl from './football/football_fire_up.png';
+import footballFireUpLeftUrl from './football/football_fire_up_left.png';
+import footballFireUpRightUrl from './football/football_fire_up_right.png';
+import footballFireLeftUrl from './football/football_fire_left.png';
+import footballFireRightUrl from './football/football_fire_right.png';
+
+// 6 Musician Action Poses
+import musicianIdleUrl from './musician/musician_idle.png';
+import musicianFireUpUrl from './musician/musician_fire_up.png';
+import musicianFireUpLeftUrl from './musician/musician_fire_up_left.png';
+import musicianFireUpRightUrl from './musician/musician_fire_up_right.png';
+import musicianFireLeftUrl from './musician/musician_fire_left.png';
+import musicianFireRightUrl from './musician/musician_fire_right.png';
+
+// 6 Hacker Action Poses
+import hackerIdleUrl from './hacker/hacker_idle.png';
+import hackerFireUpUrl from './hacker/hacker_fire_up.png';
+import hackerFireUpLeftUrl from './hacker/hacker_fire_up_left.png';
+import hackerFireUpRightUrl from './hacker/hacker_fire_up_right.png';
+import hackerFireLeftUrl from './hacker/hacker_fire_left.png';
+import hackerFireRightUrl from './hacker/hacker_fire_right.png';
+
+// 6 Shinobi Action Poses
+import shinobiIdleUrl from './shinobi/shinobi_idle.png';
+import shinobiFireUpUrl from './shinobi/shinobi_fire_up.png';
+import shinobiFireUpLeftUrl from './shinobi/shinobi_fire_up_left.png';
+import shinobiFireUpRightUrl from './shinobi/shinobi_fire_up_right.png';
+import shinobiFireLeftUrl from './shinobi/shinobi_fire_left.png';
+import shinobiFireRightUrl from './shinobi/shinobi_fire_right.png';
+
 export const PONPI_SPRITE_URLS: Record<PoseId, string> = {
   idle: idleUrl,
   fire_up: fireUpUrl,
@@ -152,6 +232,96 @@ export const GLADIATOR_SPRITE_URLS: Record<PoseId, string> = {
   fire_right: gladiatorFireRightUrl,
 };
 
+export const DINO_SPRITE_URLS: Record<PoseId, string> = {
+  idle: dinoIdleUrl,
+  fire_up: dinoFireUpUrl,
+  fire_up_left: dinoFireUpLeftUrl,
+  fire_up_right: dinoFireUpRightUrl,
+  fire_left: dinoFireLeftUrl,
+  fire_right: dinoFireRightUrl,
+};
+
+export const BANANA_CAT_SPRITE_URLS: Record<PoseId, string> = {
+  idle: bananaCatIdleUrl,
+  fire_up: bananaCatFireUpUrl,
+  fire_up_left: bananaCatFireUpLeftUrl,
+  fire_up_right: bananaCatFireUpRightUrl,
+  fire_left: bananaCatFireLeftUrl,
+  fire_right: bananaCatFireRightUrl,
+};
+
+export const BOBA_RABBIT_SPRITE_URLS: Record<PoseId, string> = {
+  idle: bobaRabbitIdleUrl,
+  fire_up: bobaRabbitFireUpUrl,
+  fire_up_left: bobaRabbitFireUpLeftUrl,
+  fire_up_right: bobaRabbitFireUpRightUrl,
+  fire_left: bobaRabbitFireLeftUrl,
+  fire_right: bobaRabbitFireRightUrl,
+};
+
+export const TEDDY_BEAR_SPRITE_URLS: Record<PoseId, string> = {
+  idle: teddyBearIdleUrl,
+  fire_up: teddyBearFireUpUrl,
+  fire_up_left: teddyBearFireUpLeftUrl,
+  fire_up_right: teddyBearFireUpRightUrl,
+  fire_left: teddyBearFireLeftUrl,
+  fire_right: teddyBearFireRightUrl,
+};
+
+export const HUNTER_SPRITE_URLS: Record<PoseId, string> = {
+  idle: hunterIdleUrl,
+  fire_up: hunterFireUpUrl,
+  fire_up_left: hunterFireUpLeftUrl,
+  fire_up_right: hunterFireUpRightUrl,
+  fire_left: hunterFireLeftUrl,
+  fire_right: hunterFireRightUrl,
+};
+
+export const CORAL_SPRITE_URLS: Record<PoseId, string> = {
+  idle: coralIdleUrl,
+  fire_up: coralFireUpUrl,
+  fire_up_left: coralFireUpLeftUrl,
+  fire_up_right: coralFireUpRightUrl,
+  fire_left: coralFireLeftUrl,
+  fire_right: coralFireRightUrl,
+};
+
+export const FOOTBALL_SPRITE_URLS: Record<PoseId, string> = {
+  idle: footballIdleUrl,
+  fire_up: footballFireUpUrl,
+  fire_up_left: footballFireUpLeftUrl,
+  fire_up_right: footballFireUpRightUrl,
+  fire_left: footballFireLeftUrl,
+  fire_right: footballFireRightUrl,
+};
+
+export const MUSICIAN_SPRITE_URLS: Record<PoseId, string> = {
+  idle: musicianIdleUrl,
+  fire_up: musicianFireUpUrl,
+  fire_up_left: musicianFireUpLeftUrl,
+  fire_up_right: musicianFireUpRightUrl,
+  fire_left: musicianFireLeftUrl,
+  fire_right: musicianFireRightUrl,
+};
+
+export const HACKER_SPRITE_URLS: Record<PoseId, string> = {
+  idle: hackerIdleUrl,
+  fire_up: hackerFireUpUrl,
+  fire_up_left: hackerFireUpLeftUrl,
+  fire_up_right: hackerFireUpRightUrl,
+  fire_left: hackerFireLeftUrl,
+  fire_right: hackerFireRightUrl,
+};
+
+export const SHINOBI_SPRITE_URLS: Record<PoseId, string> = {
+  idle: shinobiIdleUrl,
+  fire_up: shinobiFireUpUrl,
+  fire_up_left: shinobiFireUpLeftUrl,
+  fire_up_right: shinobiFireUpRightUrl,
+  fire_left: shinobiFireLeftUrl,
+  fire_right: shinobiFireRightUrl,
+};
+
 const spriteImages: Partial<Record<PoseId, HTMLImageElement>> = {};
 const ninjaSpriteImages: Partial<Record<PoseId, HTMLImageElement>> = {};
 const samuraiSpriteImages: Partial<Record<PoseId, HTMLImageElement>> = {};
@@ -161,6 +331,16 @@ const basketballSpriteImages: Partial<Record<PoseId, HTMLImageElement>> = {};
 const soccerSpriteImages: Partial<Record<PoseId, HTMLImageElement>> = {};
 const builderSpriteImages: Partial<Record<PoseId, HTMLImageElement>> = {};
 const gladiatorSpriteImages: Partial<Record<PoseId, HTMLImageElement>> = {};
+const dinoSpriteImages: Partial<Record<PoseId, HTMLImageElement>> = {};
+const bananaCatSpriteImages: Partial<Record<PoseId, HTMLImageElement>> = {};
+const bobaRabbitSpriteImages: Partial<Record<PoseId, HTMLImageElement>> = {};
+const teddyBearSpriteImages: Partial<Record<PoseId, HTMLImageElement>> = {};
+const hunterSpriteImages: Partial<Record<PoseId, HTMLImageElement>> = {};
+const coralSpriteImages: Partial<Record<PoseId, HTMLImageElement>> = {};
+const footballSpriteImages: Partial<Record<PoseId, HTMLImageElement>> = {};
+const musicianSpriteImages: Partial<Record<PoseId, HTMLImageElement>> = {};
+const hackerSpriteImages: Partial<Record<PoseId, HTMLImageElement>> = {};
+const shinobiSpriteImages: Partial<Record<PoseId, HTMLImageElement>> = {};
 
 function createLazyImageGetter(
   cache: Partial<Record<PoseId, HTMLImageElement>>,
@@ -185,9 +365,39 @@ export const getBasketballSprite = createLazyImageGetter(basketballSpriteImages,
 export const getSoccerSprite = createLazyImageGetter(soccerSpriteImages, SOCCER_SPRITE_URLS);
 export const getBuilderSprite = createLazyImageGetter(builderSpriteImages, BUILDER_SPRITE_URLS);
 export const getGladiatorSprite = createLazyImageGetter(gladiatorSpriteImages, GLADIATOR_SPRITE_URLS);
+export const getDinoSprite = createLazyImageGetter(dinoSpriteImages, DINO_SPRITE_URLS);
+export const getBananaCatSprite = createLazyImageGetter(bananaCatSpriteImages, BANANA_CAT_SPRITE_URLS);
+export const getBobaRabbitSprite = createLazyImageGetter(bobaRabbitSpriteImages, BOBA_RABBIT_SPRITE_URLS);
+export const getTeddyBearSprite = createLazyImageGetter(teddyBearSpriteImages, TEDDY_BEAR_SPRITE_URLS);
+export const getHunterSprite = createLazyImageGetter(hunterSpriteImages, HUNTER_SPRITE_URLS);
+export const getCoralSprite = createLazyImageGetter(coralSpriteImages, CORAL_SPRITE_URLS);
+export const getFootballSprite = createLazyImageGetter(footballSpriteImages, FOOTBALL_SPRITE_URLS);
+export const getMusicianSprite = createLazyImageGetter(musicianSpriteImages, MUSICIAN_SPRITE_URLS);
+export const getHackerSprite = createLazyImageGetter(hackerSpriteImages, HACKER_SPRITE_URLS);
+export const getShinobiSprite = createLazyImageGetter(shinobiSpriteImages, SHINOBI_SPRITE_URLS);
 
 export function getSpriteForOutfit(outfitId: string | null | undefined, pose: PoseId): HTMLImageElement {
   switch (outfitId) {
+    case 'outfit_coral':
+      return getCoralSprite(pose);
+    case 'outfit_football':
+      return getFootballSprite(pose);
+    case 'outfit_musician':
+      return getMusicianSprite(pose);
+    case 'outfit_hacker':
+      return getHackerSprite(pose);
+    case 'outfit_shinobi':
+      return getShinobiSprite(pose);
+    case 'outfit_dino':
+      return getDinoSprite(pose);
+    case 'outfit_banana_cat':
+      return getBananaCatSprite(pose);
+    case 'outfit_boba_rabbit':
+      return getBobaRabbitSprite(pose);
+    case 'outfit_teddy_bear':
+      return getTeddyBearSprite(pose);
+    case 'outfit_hunter':
+      return getHunterSprite(pose);
     case 'outfit_halloween':
       return getHalloweenSprite(pose);
     case 'outfit_basketball':
@@ -224,6 +434,16 @@ if (typeof window !== 'undefined') {
     getSoccerSprite(pose);
     getBuilderSprite(pose);
     getGladiatorSprite(pose);
+    getDinoSprite(pose);
+    getBananaCatSprite(pose);
+    getBobaRabbitSprite(pose);
+    getTeddyBearSprite(pose);
+    getHunterSprite(pose);
+    getCoralSprite(pose);
+    getFootballSprite(pose);
+    getMusicianSprite(pose);
+    getHackerSprite(pose);
+    getShinobiSprite(pose);
   }
 }
 
@@ -295,11 +515,27 @@ function getTintedSkinCanvas(
     outfitId === 'outfit_builder' ||
     outfitId === 'outfit_construction' ||
     outfitId === 'outfit_gladiator' ||
-    outfitId === 'outfit_knight';
+    outfitId === 'outfit_knight' ||
+    outfitId === 'outfit_dino' ||
+    outfitId === 'outfit_banana_cat' ||
+    outfitId === 'outfit_boba_rabbit' ||
+    outfitId === 'outfit_teddy_bear' ||
+    outfitId === 'outfit_hunter' ||
+    outfitId === 'outfit_coral' ||
+    outfitId === 'outfit_football' ||
+    outfitId === 'outfit_musician' ||
+    outfitId === 'outfit_hacker' ||
+    outfitId === 'outfit_shinobi';
 
   if (isNewSkin) {
-    // If pink style, native skins are already pink, so return as-is
-    if (!styleId || styleId === 'style_pink') {
+    // If banana_cat and classic yellow style, return native white cat + yellow banana
+    if (outfitId === 'outfit_banana_cat' && (!styleId || styleId === 'style_yellow' || styleId === 'style_classic')) {
+      tintedCache.set(key, off);
+      return off;
+    }
+
+    // For other skins, if pink style, native skins are already pink, so return as-is
+    if (outfitId !== 'outfit_banana_cat' && (!styleId || styleId === 'style_pink')) {
       tintedCache.set(key, off);
       return off;
     }
@@ -318,23 +554,43 @@ function getTintedSkinCanvas(
         const g = data[i + 1];
         const b = data[i + 2];
 
-        // Exclude white elements (headband, reflections)
-        const isWhite = r > 215 && g > 215 && b > 215 && Math.abs(r - g) < 22 && Math.abs(g - b) < 22;
-        // Exclude deep mouth red (tongue)
-        const isMouthRed = r > 210 && g < 98 && b < 116 && (r - g > 130);
-        // Identify pink skin flesh
-        const isPinkSkin =
-          !isWhite &&
-          !isMouthRed &&
-          r > 160 &&
-          g > 60 &&
-          g < 225 &&
-          b > 80 &&
-          b < 235 &&
-          r > g + 18 &&
-          r > b + 8;
+        let shouldTint = false;
 
-        if (isPinkSkin) {
+        if (outfitId === 'outfit_banana_cat') {
+          // Yellow banana peel and hood: r > 170 && g > 130 && b < 110
+          const isBanana = r > 170 && g > 130 && b < 110;
+          // Dark eyes / nose / outlines
+          const isDark = r < 50 && g < 50 && b < 50;
+          // Mouth tongue
+          const isTongue = r > 200 && g < 100 && b < 120;
+          // Cat body fur (cream / white)
+          if (!isBanana && !isDark && !isTongue && r > 160 && g > 150 && b > 140) {
+            shouldTint = true;
+          }
+        } else {
+          // Standard Ponpi pink skin flesh
+          // Exclude white elements (teeth, skull bones, reflections, white bandages/masks)
+          const isWhite = r > 215 && g > 215 && b > 215 && Math.abs(r - g) < 22 && Math.abs(g - b) < 22;
+          // Exclude deep mouth red (tongue)
+          const isMouthRed = r > 210 && g < 98 && b < 116 && (r - g > 130);
+          // Identify pink skin flesh
+          const isPinkSkin =
+            !isWhite &&
+            !isMouthRed &&
+            r > 150 &&
+            g > 50 &&
+            g < 225 &&
+            b > 70 &&
+            b < 235 &&
+            r > g + 15 &&
+            r > b + 6;
+
+          if (isPinkSkin) {
+            shouldTint = true;
+          }
+        }
+
+        if (shouldTint) {
           const lum = 0.299 * r + 0.587 * g + 0.114 * b;
           const factor = Math.min(1.35, Math.max(0.65, lum / 185));
           data[i] = Math.min(255, Math.round(tr * factor));

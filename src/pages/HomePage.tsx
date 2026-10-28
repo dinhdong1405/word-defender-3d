@@ -5,7 +5,7 @@ import { PaperPanel } from '../components/PaperPanel';
 import { CoinBadge } from '../components/CoinBadge';
 import { PonpiPreview } from '../components/PonpiPreview';
 import { BookOpen, ShoppingBag, Shirt, BarChart3, Play, Flame, Sparkles } from 'lucide-react';
-import { MAP_CONFIGS } from '../config/maps';
+import { MAP_CONFIGS, ALL_MAP_IDS, GameMapId } from '../config/maps';
 import { useAuth } from '../auth/AuthContext';
 import { AccountMenu } from '../components/AccountMenu';
 
@@ -196,48 +196,59 @@ export const HomePage: React.FC = () => {
           </div>
 
           {/* Quick Map Selector Badge on Home */}
-          <div
-            onClick={() => setSelectedMap(selectedMap === 'red-canyon' ? 'default' : 'red-canyon')}
-            title="Click để đổi nhanh bản đồ chiến đấu"
-            style={{
-              marginTop: '12px',
-              width: '100%',
-              padding: '8px 12px',
-              backgroundColor: selectedMap === 'red-canyon' ? '#FFF2EB' : '#F7F7F7',
-              border: selectedMap === 'red-canyon' ? '2px solid #DE764A' : '1.5px solid var(--color-ink)',
-              borderRadius: 'var(--radius-md)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              cursor: 'pointer',
-              boxShadow: 'var(--shadow-sticker-sm)',
-              transition: 'all 0.15s ease',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '1.2rem' }}>{selectedMap === 'red-canyon' ? '🏜️' : '📝'}</span>
-              <div style={{ textAlign: 'left' }}>
-                <div style={{ fontSize: '0.7rem', color: 'var(--color-muted-ink)', fontWeight: 800, textTransform: 'uppercase' }}>
-                  Bản Đồ Đang Dùng
+          {(() => {
+            const currentConfig = MAP_CONFIGS[selectedMap] || MAP_CONFIGS.default;
+            const cycleMap = () => {
+              const currentIndex = ALL_MAP_IDS.indexOf(selectedMap);
+              const nextIndex = (currentIndex + 1) % ALL_MAP_IDS.length;
+              setSelectedMap(ALL_MAP_IDS[nextIndex]);
+            };
+
+            return (
+              <div
+                onClick={cycleMap}
+                title="Click để đổi nhanh sang bản đồ tiếp theo"
+                style={{
+                  marginTop: '12px',
+                  width: '100%',
+                  padding: '8px 12px',
+                  backgroundColor: selectedMap === 'default' ? '#F7F7F7' : '#FCF8F5',
+                  border: selectedMap === 'default' ? '1.5px solid var(--color-ink)' : `2px solid ${currentConfig.accentColor}`,
+                  borderRadius: 'var(--radius-md)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  cursor: 'pointer',
+                  boxShadow: 'var(--shadow-sticker-sm)',
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '1.25rem' }}>{currentConfig.emoji}</span>
+                  <div style={{ textAlign: 'left' }}>
+                    <div style={{ fontSize: '0.7rem', color: 'var(--color-muted-ink)', fontWeight: 800, textTransform: 'uppercase' }}>
+                      Bản Đồ Đang Dùng
+                    </div>
+                    <div style={{ fontSize: '0.88rem', fontWeight: 900, color: selectedMap === 'default' ? 'var(--color-ink)' : currentConfig.accentColor }}>
+                      {currentConfig.name}
+                    </div>
+                  </div>
                 </div>
-                <div style={{ fontSize: '0.88rem', fontWeight: 900, color: selectedMap === 'red-canyon' ? '#C04C20' : 'var(--color-ink)' }}>
-                  {MAP_CONFIGS[selectedMap]?.name}
-                </div>
+                <span
+                  style={{
+                    fontSize: '0.74rem',
+                    fontWeight: 800,
+                    padding: '4px 9px',
+                    backgroundColor: selectedMap === 'default' ? 'var(--color-ink)' : currentConfig.accentColor,
+                    color: '#FFFFFF',
+                    borderRadius: 'var(--radius-full)',
+                  }}
+                >
+                  Đổi Map ↺
+                </span>
               </div>
-            </div>
-            <span
-              style={{
-                fontSize: '0.74rem',
-                fontWeight: 800,
-                padding: '4px 9px',
-                backgroundColor: selectedMap === 'red-canyon' ? '#DE764A' : 'var(--color-ink)',
-                color: '#FFFFFF',
-                borderRadius: 'var(--radius-full)',
-              }}
-            >
-              Đổi Map ↺
-            </span>
-          </div>
+            );
+          })()}
         </PaperPanel>
 
         {/* Quick Navigation Cards */}

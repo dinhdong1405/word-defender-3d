@@ -24,8 +24,8 @@ import {
   Keyboard,
 } from 'lucide-react';
 import { DefeatedWordEffect, RunSummary } from '../types/game';
-import { GameMapId, getActiveMapId, setActiveMapId } from '../config/maps';
-import { drawRedCanyonBackground } from '../game/assets/RedCanyonBackground';
+import { GameMapId, getActiveMapId, setActiveMapId, MAP_CONFIGS } from '../config/maps';
+import { drawSvgMapBackground } from '../game/assets/SvgMapBackground';
 
 export const BattlePage: React.FC = () => {
   const {
@@ -346,13 +346,14 @@ export const BattlePage: React.FC = () => {
 
     // 1. Draw Background
     const currentMap = activeMapRef.current;
-    if (currentMap === 'red-canyon') {
-      drawRedCanyonBackground(
+    const currentMapConfig = MAP_CONFIGS[currentMap];
+    if (currentMap !== 'default' && currentMapConfig?.previewImage) {
+      drawSvgMapBackground(
         ctx,
         width,
         height,
         visualScale,
-        eng.gameTimeMs,
+        currentMapConfig.previewImage,
         {
           reduceMotion: settingsRef.current?.reduceMotion,
           defenseLineY: mapY(GAME_BALANCE.defenseLineY),
@@ -576,7 +577,7 @@ export const BattlePage: React.FC = () => {
       style={{
         width: '100dvw',
         height: '100dvh',
-        backgroundColor: selectedMap === 'red-canyon' ? '#BD4D2A' : 'var(--color-paper)',
+        backgroundColor: 'var(--color-paper)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'stretch',
@@ -635,7 +636,7 @@ export const BattlePage: React.FC = () => {
           overflow: 'hidden',
           flex: '0 0 auto',
           boxShadow: 'none',
-          backgroundColor: selectedMap === 'red-canyon' ? '#DE764A' : 'var(--color-paper)',
+          backgroundColor: 'var(--color-paper)',
         }}
       >
         {/* Game Canvas */}
@@ -1029,11 +1030,11 @@ export const BattlePage: React.FC = () => {
                 }}
               >
                 <div style={{ fontSize: '0.74rem', color: 'var(--color-muted-ink)' }}>
-                  Chủ đề Map: <strong>{selectedMap === 'red-canyon' ? 'Hẻm Núi Đỏ (Red Canyon)' : 'Tập Vở Ô Ly (Mặc định)'}</strong>
+                  Chủ đề Map: <strong>{selectedMap === 'forest-mountain' ? 'Phong Cảnh Núi Rừng' : 'Tập Vở Ô Ly (Mặc định)'}</strong>
                 </div>
                 <button
                   type="button"
-                  onClick={() => handleToggleMap(selectedMap === 'red-canyon' ? 'default' : 'red-canyon')}
+                  onClick={() => handleToggleMap(selectedMap === 'forest-mountain' ? 'default' : 'forest-mountain')}
                   style={{
                     background: 'none',
                     border: 'none',
@@ -1045,7 +1046,7 @@ export const BattlePage: React.FC = () => {
                     padding: '3px 6px',
                   }}
                 >
-                  {selectedMap === 'red-canyon' ? '↺ Chuyển về Map Mặc Định' : '🏜️ Thử nghiệm Map: Hẻm Núi Đỏ'}
+                  {selectedMap === 'forest-mountain' ? '↺ Chuyển về Map Mặc Định' : '🌲 Thử nghiệm Map: Phong Cảnh Núi Rừng'}
                 </button>
               </div>
             </div>
