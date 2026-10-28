@@ -50,28 +50,28 @@ function randomBase64(byteLength: number): string {
 
 async function sha256(value: string): Promise<string> {
   const data = new TextEncoder().encode(value);
-  const source: BufferSource = typeof Buffer !== 'undefined' ? Buffer.from(data) : data;
-  const digest = await crypto.subtle.digest('SHA-256', source);
+  const source = typeof Buffer !== 'undefined' ? Buffer.from(data) : data;
+  const digest = await crypto.subtle.digest('SHA-256', source as any);
   return bytesToBase64(new Uint8Array(digest));
 }
 
 async function derivePasswordHash(password: string, salt: string, iterations: number): Promise<string> {
   const passwordData = new TextEncoder().encode(password);
-  const keySource: BufferSource = typeof Buffer !== 'undefined' ? Buffer.from(passwordData) : passwordData;
+  const keySource = typeof Buffer !== 'undefined' ? Buffer.from(passwordData) : passwordData;
   const material = await crypto.subtle.importKey(
     'raw',
-    keySource,
+    keySource as any,
     'PBKDF2',
     false,
     ['deriveBits']
   );
   const saltBytes = base64ToBytes(salt);
-  const saltSource: BufferSource = typeof Buffer !== 'undefined' ? Buffer.from(saltBytes) : saltBytes;
+  const saltSource = typeof Buffer !== 'undefined' ? Buffer.from(saltBytes) : saltBytes;
   const bits = await crypto.subtle.deriveBits(
     {
       name: 'PBKDF2',
       hash: 'SHA-256',
-      salt: saltSource,
+      salt: saltSource as any,
       iterations,
     },
     material,
