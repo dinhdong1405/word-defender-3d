@@ -6,6 +6,12 @@ import path from 'path';
 export default defineConfig({
   base: process.env.GITHUB_ACTIONS === 'true' ? '/word-defender-3d/' : '/',
   plugins: [react()],
+  build: {
+    // Keep the deployable output in a real directory. The local `dist` path is
+    // a OneDrive junction and cannot be packaged safely by the hosting workflow.
+    outDir: 'build',
+    emptyOutDir: true,
+  },
   server: {
     fs: {
       strict: false,
